@@ -1,6 +1,6 @@
 ## 作者信息
-刘理彬
-QQ:214434802
+LeeBean
+QQ:2429520759
 
 ## 技术栈
 vue2 + vuex + vue-router + vue-resource+ vue-lazy-render + webpack + ES6/7 + fetch + sass + flex + svg
