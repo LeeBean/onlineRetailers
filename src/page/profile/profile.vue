@@ -75,6 +75,7 @@
     import {imgBaseUrl } from 'src/config/env'
     import {userInfo } from 'src/service/getData'
     import {getImgPath } from 'src/components/common/mixin'
+    import {wxHideOptionMenu } from 'src/config/mUtils'
     export default {
         data() {
             return {
@@ -85,9 +86,11 @@
         },
         created() {
             this.shopid = this.$route.query.shopid;
+           wxHideOptionMenu();
         },
        
         mounted() {
+
             userInfo({}).then(res => {
                 if (res.code == "1") {
                     this.myInfo = res.userInfo;

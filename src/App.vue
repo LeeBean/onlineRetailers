@@ -1,31 +1,33 @@
 <template>
 	<div>
 		<transition name="router-fade" mode="out-in">
-    		<router-view></router-view>
+			<!--<keep-alive>-->
+    			<router-view ></router-view>
+			<!--</keep-alive>-->
     	</transition>
     </div>
 </template>
 
 <script>
-	//import {mapMutations} from 'vuex'
+	import {mapMutations} from 'vuex'
   	export default {
-		// data() {
-        //     return {
-        //         shopid:''
-        //     }
-        // },
-		// created() {
-		// 	let me=this;
-        //     me.shopid= this.$route.params.shopid;
-		// 	if(me.shopid){
- 		// 		me.SAVE_SHOPID(me.id);
-		// 	}
-        // },
-		//  methods: {
-        //      ...mapMutations([
-        //         'SAVE_SHOPID'
-        //     ]),
-        // }
+		data() {
+            return {
+                shopid:''
+            }
+        },
+		created() {
+			let me=this;
+            me.shopid= this.$route.params.shopid;
+			if(me.shopid){
+ 				me.SAVE_SHOPID(me.id);
+			}
+        },
+		 methods: {
+             ...mapMutations([
+                'SAVE_SHOPID'
+            ]),
+        }
   	}
 
 </script>

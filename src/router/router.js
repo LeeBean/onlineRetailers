@@ -17,7 +17,6 @@ const addAddress = r => require.ensure([], () => r(require('../page/confirmOrder
 const service = r => require.ensure([], () => r(require('../page/service/service')), 'service')
 
 
-
 export default [{
     path: '/',
     component: App, //顶层路由，对应index.html
@@ -25,7 +24,7 @@ export default [{
         //地址为空时跳转home页面
         {
             path: '',
-            redirect: '/home/'
+            redirect: '/home/1'
         },
         //首页城市列表页
         {

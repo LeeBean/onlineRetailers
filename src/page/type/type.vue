@@ -12,7 +12,7 @@
                 <div class="cho_list">
                     <ul>
                         <li v-for="(item,index) in channelList" :key="index" @click="changeTab(index,item.categoryId)">
-                            <span class="" :class="{cho_list_span: index == classIndex}">{{item.name}}</span>
+                            <span class="" :class="{cho_list_span: item.categoryId == classIndex}">{{item.name}}</span>
                         </li>
                     </ul>
                 </div>
@@ -49,26 +49,14 @@
 </template>
 
 <script>
-    import {
-        mapState
-    } from 'vuex'
-    import {
-        loadMore,
-        getImgPath
-    } from 'src/components/common/mixin'
-    import {
-        showBack,
-        animate
-    } from 'src/config/mUtils'
+    import {mapState } from 'vuex'
+    import {loadMore,getImgPath } from 'src/components/common/mixin'
+    import { showBack, animate } from 'src/config/mUtils'
     import loading from 'src/components/common/loading'
     import footGuide from '../../components/footer/footGuide'
-    import {
-        getCategoryList,
-        goodsLists
-    } from 'src/service/getData'
-    import {
-        imgBaseUrl
-    } from '../../config/env'
+    import {getCategoryList,goodsLists} from 'src/service/getData'
+    import {imgBaseUrl} from '../../config/env'
+    import {wxShowOptionMenu } from 'src/config/mUtils'
     
     export default {
         data() {
@@ -96,8 +84,14 @@
             }
         },
         created() {
+
             //this.showLoading = true;
             this.shopid = this.$route.query.shopid;
+            if(this.$route.query.channelId){
+                this.classIndex=this.$route.query.channelId;
+                this.pram.categId=this.$route.query.channelId;
+            }
+           wxShowOptionMenu();
         },
         mixins: [loadMore, getImgPath],
         mounted() {
@@ -106,7 +100,10 @@
                 this.channelList = res.categoryList;
                 if (res.categoryList) {
                     me.pram.storeId = me.shopid;
-                    me.pram.categId = res.categoryList[0].categoryId;
+                    if(!this.$route.query.channelId){
+                        me.classIndex= res.categoryList[0].categoryId;
+                        me.pram.categId = res.categoryList[0].categoryId;
+                    }
                     me.initData();
                     me.showLoading = false;
                 }
@@ -163,7 +160,7 @@
             },
     
             changeTab(index, channelId) {
-                this.classIndex = index;
+                this.classIndex = channelId;
                 this.channelId = channelId;
                 this.pram.categId = channelId;
                 this.nomore = false;

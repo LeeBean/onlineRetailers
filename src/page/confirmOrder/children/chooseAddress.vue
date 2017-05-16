@@ -95,14 +95,14 @@
                         if (this.myaddressList.length == 0) {
                             this.showAlert = true;
                             this.alertText = "暂无收货人地址，请前往添加";
-                            setTimeout(() => {
-                                this.$router.push({
-                                    path: '/addAddress',
-                                    query: {
-                                        shopid: this.shopid
-                                    }
-                                });
-                            }, 1000)
+                            // setTimeout(() => {
+                            //     this.$router.push({
+                            //         path: '/addAddress',
+                            //         query: {
+                            //             shopid: this.shopid
+                            //         }
+                            //     });
+                            // }, 1000)
                         }else{
                              //不能使用forEach  因为无法跳出循环
                             for (var i = 0; i < res.dataList.length; i++) {

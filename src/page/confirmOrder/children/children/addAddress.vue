@@ -1,7 +1,7 @@
 <template>
-    <div class="address_page">
+       <div class="rating_page">
         <lazy-render :time="300">
-            <section class="page_text_container">
+            <section id="scroll_section" class="scroll_container">
                 <div class="ui_list address_edit_infos">
                     <ul>
                         <li class="ui_list_li a"><input type="text" placeholder="姓名" v-model="addressData.name" maxlength="20"></li>
@@ -110,11 +110,11 @@
                 </section>
             </section>
             <loading-toast v-if="showLoadingToast" @closeTip="showLoadingToast = false" :loadingText="loadingText"></loading-toast>
-            <div class="my_address_but">
-                 <button @click="addAddress">保存</button>
-             </div>
+            <div@click.stop="addAddress" class="add_icon_footer">
+                <!--<img src="../../../images/add_address.png" height="24" width="24">-->
+                <span style="width: 90%;text-align: center; background: #fb5000; color: #fff; font-size: 0.6rem; height: 35px; line-height: 35px; border-radius: 5px;">保存</span>
+            </div>
         </lazy-render>
-        
         <transition name="loading">
             <loading v-show="showLoading"></loading>
         </transition>
@@ -122,6 +122,9 @@
         <transition name="router-slid" mode="out-in">
             <router-view></router-view>
         </transition>
+        <!--<div class="my_address_but">
+            <button @click.stop="addAddress">保存</button>
+        </div>-->
     </div>
 </template>
 

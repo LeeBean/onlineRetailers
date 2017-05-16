@@ -142,6 +142,7 @@
     import footGuide from 'src/components/footer/footGuide'
     import alertTip from 'src/components/common/alertTip'
     import loadingToast from 'src/components/common/loadingToast'
+
     import {
         orderList,
         cancelOrder,
@@ -156,8 +157,10 @@
     import {
         showBack,
         animate,
-        isWeiXin
+        isWeiXin,
+        wxHideOptionMenu
     } from 'src/config/mUtils'
+
     
     export default {
         data() {
@@ -202,6 +205,7 @@
             }
             this.orderPram.storeId = this.shopid;
             this.orderPram.status = this.orderStatus;
+            wxHideOptionMenu();
         },
         mounted() {
             this.getOrderList();

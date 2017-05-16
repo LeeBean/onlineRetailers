@@ -162,7 +162,7 @@
     import alertTip from 'src/components/common/alertTip'
     import loadingToast from 'src/components/common/loadingToast'
     import {
-        isWeiXin
+        isWeiXin,wxHideOptionMenu
     } from 'src/config/mUtils'
     
     export default {
@@ -195,6 +195,7 @@
             this.pram.storeId = this.shopid;
             this.pram.orderId = this.$route.query.id;
             this.oprOrderId = this.$route.query.id;
+            wxHideOptionMenu();
         },
         mounted() {
             this.initData();

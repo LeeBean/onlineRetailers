@@ -17,7 +17,7 @@
                  //shopid:''
             }
         },
-        props: ['storeId'],
+        props: ['storeId','storeId'],
     }
 </script>
 

@@ -4,12 +4,12 @@
         <div v-for="item in storeCustomFieldList">
             <shop v-if="item.fieldType=='tpl_shop'" :content="item.content" :storeId="id" :productNumber="productNumber" :storeName="pStoreName" :storeImage="pImage"></shop>
             <serach-form v-if="item.fieldType=='search'"></serach-form>
-            <image-ad v-if="item.fieldType=='image_ad'" :content="item.content"></image-ad>
-            <image-nav v-if="item.fieldType=='image_nav'" :content="item.content"></image-nav>
-            <nocite v-if="item.fieldType=='notice'" :content="item.content"></nocite>
-            <rich-text v-if="item.fieldType=='rich_text'" :content="item.content"></rich-text>
-            <text-nav v-if="item.fieldType=='text_nav'" :content="item.content"></text-nav>
-            <product v-if="item.fieldType=='goods'" :content="item.content"></product>
+            <image-ad v-if="item.fieldType=='image_ad'" :content="item.content" :storeId="shopid"></image-ad>
+            <image-nav v-if="item.fieldType=='image_nav'" :content="item.content" :storeId="shopid"></image-nav>
+            <nocite v-if="item.fieldType=='notice'" :content="item.content" :storeId="shopid"></nocite>
+            <rich-text v-if="item.fieldType=='rich_text'" :content="item.content" :storeId="shopid"></rich-text>
+            <text-nav v-if="item.fieldType=='text_nav'" :content="item.content" :storeId="shopid"></text-nav>
+            <product v-if="item.fieldType=='goods'" :content="item.content" :storeId="shopid"></product>
             <hr v-if="item.fieldType=='line'" style="height:1px;border:none;border-top:1px dashed #999;" />
             <div v-if="item.fieldType=='white'" :style="{height:item.content.height+'px'}" class="white"></div>
         </div>
@@ -26,7 +26,6 @@
     import {
         imgBaseUrl
     } from 'src/config/env'
-    
     import {
         loadMore
     } from 'src/components/common/mixin'
@@ -39,7 +38,7 @@
     import richText from 'src/components/home/richText'
     import serachForm from 'src/components/home/searchForm'
     import shop from 'src/components/home/shop'
-    import {homeDatas} from 'src/service/getData'
+    import {pageView,groupView} from 'src/service/getData'
     import 'src/plugins/swiper.min.js'
     import 'src/style/swiper.min.css'
     
@@ -52,24 +51,31 @@
                 showLoading: true //显示加载动画
             }
         },
-        async beforeMount() {
-    
-        },
         mixins: [loadMore],
         mounted() {
             let me=this;
-            //me.id= this.$route.params.id;
-            me.id= 1;
-            me.SAVE_SHOPID( me.id);
+            me.id=  me.$route.query.id;
             me.showLoading = true;
-            //获取首页数据
-            homeDatas( me.id).then(res => {
-                me.productNumber = res.productNumber;
-                me.storeCustomFieldList = res.storeCustomFieldList;
-                me.showLoading = false;
-            }).catch(function(err) {
-                me.showLoading = false;
-            })
+            if(me.$route.query.type=='wym'){//微页面
+                //获取数据
+                pageView( me.id).then(res => {
+                    me.productNumber = res.productNumber;
+                    me.storeCustomFieldList = res.storeCustomFieldList;
+                    me.showLoading = false;
+                }).catch(function(err) {
+                    me.showLoading = false;
+                })
+            }else if(me.$route.query.type=='fz'){//商品分类
+                //获取数据
+                groupView(me.id).then(res => {
+                    me.productNumber = res.productNumber;
+                    me.storeCustomFieldList = res.storeCustomFieldList;
+                    me.showLoading = false;
+                }).catch(function(err) {
+                    me.showLoading = false;
+                })
+            }
+            
            
         },
         components: {

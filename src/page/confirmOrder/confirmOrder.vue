@@ -98,7 +98,7 @@
                             </svg>
                         </li>
                         <li :class='{choose: checkpram.buyWarType=="1"}' @click="checkpram.buyWarType=1">
-                            <span>到店提货</span>
+                            <span>到店自提</span>
                             <svg class="address_empty_right">
                                 <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#select"></use>
                             </svg>
@@ -297,10 +297,16 @@
                         this.alertText = "跨境商品需要上传身份证号！请前往添加！";
                         return;
                     }
-                } else if (mproductType == "3") {
+                } else if (mproductType == "3"&& this.checkpram.buyWarType == 0) {
                     if (!(midentityNo != "" && midentityFront != "" && midentityBack != "")) {
                         this.showAlert = true;
                         this.alertText = "直邮商品需要上传身份证号及身份证正反面！请前往添加！";
+                        return;
+                    }
+                }else if(this.checkpram.buyWarType == 1){
+                    if(this.checkpram.name==""||this.checkpram.mobile==""){
+                        this.showAlert = true;
+                        this.alertText = "请填写完整的提货人信息！";
                         return;
                     }
                 }
@@ -361,6 +367,7 @@
                         orderPay(paybo).then(res2 => {
                             me.showLoadingToast=false;
                             if (res2.code == "1") {
+                                me.$router.push({path:'/orderDetail',query:{shopid:me.shopid,id:res.orderId}});
                                 if (isWeiXin() && this.payType == 0) {
                                     function onBridgeReady() {
                                         WeixinJSBridge.invoke(
@@ -376,13 +383,13 @@
                                                 if (res3.err_msg == "get_brand_wcpay_request:ok") {
                                                     me.showAlert = true;
                                                     me.alertText = "订单支付成功！";
-                                                    me.$router.push({
-                                                        path: '/orderDetail',
-                                                        query: {
-                                                            shopid: me.shopid,
-                                                            id: res.orderId
-                                                        }
-                                                    });
+                                                    // me.$router.push({
+                                                    //     path: '/orderDetail',
+                                                    //     query: {
+                                                    //         shopid: me.shopid,
+                                                    //         id: res.orderId
+                                                    //     }
+                                                    // });
                                                 } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
                                             });
                                     }
@@ -396,12 +403,10 @@
                                     } else {
                                         onBridgeReady();
                                     }
-                                } else if (me.payType == 1) {
-                                    me.$router.push({path:'/orderDetail',query:{shopid:me.shopid,id:res.orderId}});
+                                } else if (me.payType == 1) { 
                                     setTimeout(()=>{
                                         window.location.href = res2.orderPayInfo;
                                     },1000)
-                                   
                                 } else {
                                     me.showAlert = true;
                                     me.alertText = "请在微信浏览器中打开";

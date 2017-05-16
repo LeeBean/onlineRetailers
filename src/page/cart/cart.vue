@@ -121,6 +121,7 @@
     } from 'src/service/getData'
     import footGuide from 'src/components/footer/footGuide'
     import alertTip from 'src/components/common/alertTip'
+    import {wxHideOptionMenu } from 'src/config/mUtils'
     
     export default {
         data() {
@@ -168,6 +169,7 @@
             this.pram.id = this.shopid;
             this.addcartpram.storeId = this.shopid;
             this.confirmpram.storeId = this.shopid;
+            wxHideOptionMenu();
         },
         mounted() {
             let me = this;

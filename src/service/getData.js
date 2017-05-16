@@ -17,13 +17,25 @@ var homeDatas = (shopId) => getJSON('POST', 'wap/home', {
     id: shopId
 });
 /**
- * 获取商品一级分类
+ * 获取内页数据
  */
-var getCategoryList = () => getJSON('GET', 'productCategoryList');
+var pageView = (id) => getJSON('POST', 'wap/pageView', {
+    id: id
+});
+/**
+ * 商品分组
+ */
+var groupView = (id) => getJSON('POST', 'wap/groupView', {
+    id: id
+});
 /**
  * 获取商品列表
  */
 var goodsLists = (ob) => getJSON('GET', 'productPageList', ob);
+/**
+ * 获取商品一级分类
+ */
+var getCategoryList = () => getJSON('GET', 'productCategoryList');
 /**
  * 获取购物车列表
  */
@@ -114,6 +126,8 @@ var getCityList = () => setpromise(city.city);
 
 export {
     homeDatas,
+    pageView,
+    groupView,
     getCityList,
     getCategoryList,
     goodsLists,

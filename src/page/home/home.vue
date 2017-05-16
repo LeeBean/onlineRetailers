@@ -5,11 +5,11 @@
                 <shop v-if="item.fieldType=='tpl_shop'" :content="item.content" :storeId="shopid" :productNumber="productNumber" :storeName="pStoreName" :storeImage="pImage"></shop>
                 <serach-form v-if="item.fieldType=='search'" :storeId="shopid"></serach-form>
                 <image-ad v-if="item.fieldType=='image_ad'" :content="item.content" :storeId="shopid"></image-ad>
-                <image-nav v-if="item.fieldType=='image_nav'" :content="item.content"></image-nav>
-                <nocite v-if="item.fieldType=='notice'" :content="item.content"></nocite>
-                <rich-text v-if="item.fieldType=='rich_text'" :content="item.content"></rich-text>
-                <text-nav v-if="item.fieldType=='text_nav'" :content="item.content"></text-nav>
-                <product v-if="item.fieldType=='goods'" :content="item.content" :storeId="shopid"></product>
+                <image-nav v-if="item.fieldType=='image_nav'" :content="item.content" :storeId="shopid"></image-nav>
+                <nocite v-if="item.fieldType=='notice'" :content="item.content" :storeId="shopid"></nocite>
+                <rich-text v-if="item.fieldType=='rich_text'" :content="item.content" :storeId="shopid"></rich-text>
+                <text-nav v-if="item.fieldType=='text_nav'" :content="item.content" :storeId="shopid"></text-nav>
+                <product v-if="item.fieldType=='goods'" :content="item.content" :storeId="shopid" @openTip="showAlert=true"></product>
                 <hr v-if="item.fieldType=='line'" style="height:1px;border:none;border-top:1px dashed #999;" />
                 <div v-if="item.fieldType=='white'" :style="{height:item.content.height+'px'}" class="white"></div>
             </div>
@@ -23,6 +23,7 @@
             <loading v-show="showLoading"></loading>
         </transition>
         <foot-guide :storeId="shopid"></foot-guide>
+        <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
     </div>
 </template>
 <script>
@@ -46,7 +47,8 @@
     import richText from 'src/components/home/richText'
     import serachForm from 'src/components/home/searchForm'
     import shop from 'src/components/home/shop'
-    
+    import {wxShowOptionMenu } from 'src/config/mUtils'
+     import alertTip from 'src/components/common/alertTip'
     import {
         homeDatas
     } from 'src/service/getData'
@@ -60,6 +62,8 @@
     export default {
         data() {
             return {
+                showAlert: false, //弹出框
+                alertText: '加入购物车成功！', //弹出框信息
                 shopid: '',
                 productNumber: 0, //店铺商品数量
                 pStoreName:'',//商品名称
@@ -89,6 +93,7 @@
             showBack(status => {
                 this.showBackStatus = status;
             });
+            wxShowOptionMenu();
         },
         components: {
             footGuide,
@@ -100,8 +105,10 @@
             richText,
             serachForm,
             shop,
-            loading
+            loading,
+            alertTip
         },
+        
         methods: {
             ...mapMutations([
                 'SAVE_SHOPID'

@@ -1,17 +1,47 @@
 <template>
-    <nav  class="msite_nav" style="margin-top:0.3rem;">
-        <div class="swiper-slide food_types_container">
-            <a v-for="item in content" v-if="item.image!=''" href="#/food?geohash=wtw3sm0q087&amp;title=%E7%BE%8E%E9%A3%9F&amp;restaurant_category_id=207" class="link_to_food">
-                <figure ><img  :src="getImgPath(item.image)">
-                    <figcaption >{{item.title}}</figcaption>
-                </figure>
-            </a>
+    <nav class="msite_nav" style="margin-top:0.3rem;">
+        <div class="food_types_container">
+    
+            <p class="link_to_food" v-for="item in content" v-if="item.image!=''">
+                <a v-if="item.prefix=='外链'" :href="item.name">
+                    <figure>
+                        <img :src="getImgPath(item.image)">
+                        <figcaption>{{item.title}}</figcaption>
+                    </figure>
+                </a>
+                <router-link v-if="item.prefix=='微页面'" :to="{path: '/innerPage',query:{shopid:storeId,id:item.url,type:'wym'}}">
+                    <figure>
+                        <img :src="getImgPath(item.image)">
+                        <figcaption>{{item.title}}</figcaption>
+                    </figure>
+                </router-link>
+                <router-link v-if="item.prefix=='商品分组'" :to="{path: '/innerPage',query:{shopid:storeId,id:item.url,type:'fz'}}">
+                    <figure>
+                        <img :src="getImgPath(item.image)">
+                        <figcaption>{{item.title}}</figcaption>
+                    </figure>
+                </router-link>
+                <router-link  v-if="item.prefix=='商品'" :to="{path: '/productDetail/'+storeId+'/'+item.url}">
+                    <figure>
+                        <img :src="getImgPath(item.image)">
+                        <figcaption>{{item.title}}</figcaption>
+                    </figure>
+                </router-link>
+                 <router-link  v-if="item.prefix=='微页面分类'" :to="{path: '/type',query:{shopid:storeId,channelId:item.url}}">
+                    <figure>
+                        <img :src="getImgPath(item.image)">
+                        <figcaption>{{item.title}}</figcaption>
+                    </figure>
+                </router-link>
+            </p>
         </div>
     </nav>
 </template>
 
 <script>
-    import {getImgPath} from '../common/mixin'
+    import {
+        getImgPath
+    } from '../common/mixin'
     export default {
         data() {
             return {
@@ -19,7 +49,7 @@
             }
         },
         mixins: [getImgPath],
-        props: ['content'],
+        props: ['content','storeId'],
     }
 </script>
 

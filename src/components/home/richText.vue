@@ -1,6 +1,5 @@
 <template>
     <div id="vhtml" class="custom-richtext custom-richtext-fullscreen" v-html="content.content">
-         
     </div>
 </template>
 
@@ -25,7 +24,7 @@
                 imgs[i].style.cssText ="background: none; max-width: 100% !important;min-height: 1px;idth: auto !important;height: auto !important;vertical-align: middle;border: none;";
             } 
         },
-        props: ['content']
+        props: ['content','storeId']
     }
 </script>
 

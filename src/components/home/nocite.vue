@@ -13,7 +13,7 @@
     
             }
         },
-        props: ['content']
+        props: ['content','storeId']
     }
 </script>
 

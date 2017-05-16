@@ -111,12 +111,12 @@
                                     <span class="input-number-increment" @click="add();">+</span>
                                 </div>
                             </div>
-                            <div class="weui-cell weui-cell_access list_we">
+                            <div class="weui-cell weui-cell_access list_we" @click="openSf">
                                 <p class="list_p">税费</p>
                                 <p class="list_r">¥ {{productInfo.tax}}</p>
                                 <div class="weui-cell-ft  list_ft"></div>
                             </div>
-                            <div class="sf_none">
+                            <div class="sf_none" v-show="showsf">
                                 <div class="sf_list">
                                     <div class="ruce"></div>
                                     <div class="sf_info">
@@ -191,6 +191,7 @@
         checkBuy,
         getPostage
     } from 'src/service/getData'
+    import {wxShowOptionMenu } from 'src/config/mUtils'
     import alertTip from 'src/components/common/alertTip'
     import 'src/plugins/swiper.min.js'
     import 'src/style/swiper.min.css'
@@ -237,7 +238,8 @@
                 oprText: '', //操作描述
                 quantity: 0, //购物车数量
                 postage: 0, //运费
-                weightDesc: '' //运费描述
+                weightDesc: '',//运费描述
+                showsf:false //是否显示税费
     
             }
         },
@@ -250,6 +252,7 @@
             me.productId = me.$route.params.productid;
             me.addcartpram.storeId = me.shopid;
             me.addcartpram.productId = me.productId;
+            wxShowOptionMenu();
         },
         mounted() {
             let me = this;
@@ -445,6 +448,13 @@
     
                 }
     
+            },
+            openSf(){
+                //var mproductType = this.orderInfo.productType; //商品类别 1-国内 2-跨境 3-直邮
+                if( me.productInfo.productType=="2"){
+                    this.showsf=!this.showsf;
+                }
+                
             }
     
         },

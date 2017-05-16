@@ -6,16 +6,20 @@
  * imgBaseUrl: 图片所在域名地址
  * 
  */
-let baseUrl = 'http://192.168.10.82:8080/';
-let baseUrl2 = 'http://192.168.10.82:8080/wap/index.html?a=v1/';
+let baseUrl = 'http://192.168.10.75:8080/';
+let baseUrl2 = 'http://192.168.10.75:8080/wap/index.html?a=v1/';
 const imgBaseUrl = 'http://www.jikeduo.com.cn/upload/';
 
+//let baseUrl = 'http://test.uzengroup.com/';
+//let baseUrl2 = 'http://test.uzengroup.com/wap/index.html?a=v1/';
+//const imgBaseUrl = 'http://www.jikeduo.com.cn/upload/';
 
 let routerMode;
 if (process.env.NODE_ENV == 'development') {
     // baseUrl = 'http://192.168.10.33:8080/';
     routerMode = 'hash'
 } else {
+    //baseUrl = 'http://www.jikeduo.com.cn/';
     //baseUrl = '';
     routerMode = 'hash'
 }

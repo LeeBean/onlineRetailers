@@ -6,15 +6,15 @@
             <router-link :to="{path: '/productDetail/'+storeId+'/'+item.id}" :style="{height:content.buy_btn_type!='1'&&content.price!='1'?'8.945rem':'10rem'}" class="js-goods link clearfix">
                 <span class="photo-block"><img class="goods-photo js-goods-lazy" v-lazy="getImgPath(item.image)" style="display:inline;"></span>
                 <span class="info clearfix info-title">
-                                            <span  class="goods-title display-block">{{item.title}}</span>
+                <span  class="goods-title display-block">{{item.title}}</span>
                 <span class="goods-sub-title c-black hide"></span>
                 <span v-if="content.price=='1'" class="goods-price display-block min-height-price">
-                                                <em>￥{{item.price}}</em>
-                                            </span>
+                    <em>￥{{item.price}}</em>
+                </span>
                 <span class="goods-price-taobao hide"></span>
                 </span>
                 <div v-if="content.buy_btn=='1'">
-                    <span  class="goods-buy btn1 info-no-title"></span>
+                    <span  class="goods-buy btn1 info-no-title" @click.stop.prevent="addcart(item.id)"></span>
                     <!--<span v-if="content.buy_btn_type=='2'" class="goods-buy btn2 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='3'" class="goods-buy btn3 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='4'" class="goods-buy btn4 info-no-title"></span>-->
@@ -28,15 +28,15 @@
             <router-link :to="{path: '/productDetail/'+storeId+'/'+item.id}" class="js-goods link clearfix" style="height: auto;">
                 <span class="photo-block" style="height: auto;"><img class="goods-photo js-goods-lazy" :src="getImgPath(item.image)" style="display:inline;    width: 100%;"></span>
                 <span class="info clearfix info-title">
-                                            <span  class="goods-title display-block">{{item.title}}</span>
+                <span  class="goods-title display-block">{{item.title}}</span>
                 <span class="goods-sub-title c-black hide"></span>
                 <span v-if="content.price=='1'" class="goods-price display-block min-height-price">
-                                                <em>￥{{item.price}}</em>
-                                            </span>
+                    <em>￥{{item.price}}</em>
+                </span>
                 <span class="goods-price-taobao hide"></span>
                 </span>
                 <div v-if="content.buy_btn=='1'">
-                    <span class="goods-buy btn1 info-no-title"></span>
+                    <span class="goods-buy btn1 info-no-title" @click.stop="addcart(item.id)"></span>
                     <!--<span v-if="content.buy_btn_type=='1'" class="goods-buy btn1 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='2'" class="goods-buy btn2 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='3'" class="goods-buy btn3 info-no-title"></span>
@@ -57,7 +57,7 @@
                     <p class="goods-price2"><em>￥{{item.price}}</em></p>
                     <div v-if="content.buy_btn=='1'">
                         
-                        <span class="goods-buy btn1 info-no-title"></span>
+                        <span class="goods-buy btn1 info-no-title" @click.stop="addcart(item.id)"></span>
                         <!--<span v-if="content.buy_btn_type=='1'" class="goods-buy btn1 info-no-title"></span>
                         <span v-if="content.buy_btn_type=='2'" class="goods-buy btn2 info-no-title"></span>
                         <span v-if="content.buy_btn_type=='3'" class="goods-buy btn3 info-no-title"></span>
@@ -67,20 +67,43 @@
             </router-link>
         </li>
     </ul>
+    
 </template>
 
 <script>
-    import {
-        getImgPath
-    } from '../common/mixin'
+    import {getImgPath} from '../common/mixin'
+    import {addNumCart} from 'src/service/getData'
     export default {
         data() {
             return {
-    
+                addcartpram: {
+                    storeId: '',
+                    productId: '',
+                    num: 1,
+                    isFromCartList: false,
+                }, //购物车商品数量修改请求参数
             }
         },
         mixins: [getImgPath],
-        props: ['content', 'storeId']
+        props: ['content','storeId'],
+        created() {
+            this.addcartpram.storeId=this.storeId;
+        },
+        methods:{
+            addcart(id){
+                //alert(id);
+                 this.addcartpram.productId=id;
+                 addNumCart(this.addcartpram).then(res => {
+                    if (res.code == "1") { //成功
+                        //alert("加入购物车成功！");
+                        this.$emit('openTip');
+                    } else {
+                        //this.$emit.openTip = true;
+                        //this.$emit.alertText = res.msg;
+                    }
+                });
+            }
+        }
        
     }
 </script>

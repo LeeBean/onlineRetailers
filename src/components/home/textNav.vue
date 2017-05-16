@@ -1,20 +1,72 @@
  <template>
-        <section class="profile-info" style="margin-top:0.3rem;">
-            
-            <router-link   v-for="item in content" to="/profile/setusername" class="info-router">
-                <section class="headportrait headportraitwo">
-                    <h2>{{item.title}}</h2>
-                    <div class="headportrait-div">
-                        <p></p>
-                        <span class="headportrait-div-bottom">
-                            <svg fill="#d8d8d8">
-                                <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
-                            </svg>
-                        </span>
-                    </div>
-                </section>
-            </router-link>
-    
+        <section class="profile-info" style="margin-top:0.3rem;"> 
+            <section  v-for="item in content" class="info-router">
+                <a v-if="item.prefix=='外链'" :href="item.name">
+                    <section class="headportrait headportraitwo">
+                        <h2>{{item.title}}</h2>
+                        <div class="headportrait-div">
+                            <p></p>
+                            <span class="headportrait-div-bottom">
+                                <svg fill="#d8d8d8">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </section>
+                </a>
+                <router-link v-if="item.prefix=='微页面'" :to="{path: '/innerPage',query:{shopid:storeId,id:item.url,type:'wym'}}">
+                    <section class="headportrait headportraitwo">
+                        <h2>{{item.title}}</h2>
+                        <div class="headportrait-div">
+                            <p></p>
+                            <span class="headportrait-div-bottom">
+                                <svg fill="#d8d8d8">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </section>
+                </router-link>
+                <router-link v-if="item.prefix=='商品分组'" :to="{path: '/innerPage',query:{shopid:storeId,id:item.url,type:'fz'}}">
+                    <section class="headportrait headportraitwo">
+                        <h2>{{item.title}}</h2>
+                        <div class="headportrait-div">
+                            <p></p>
+                            <span class="headportrait-div-bottom">
+                                <svg fill="#d8d8d8">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </section>
+                </router-link>
+               <router-link  v-if="item.prefix=='商品'" :to="{path: '/productDetail/'+storeId+'/'+item.url}">
+                    <section class="headportrait headportraitwo">
+                        <h2>{{item.title}}</h2>
+                        <div class="headportrait-div">
+                            <p></p>
+                            <span class="headportrait-div-bottom">
+                                <svg fill="#d8d8d8">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </section>
+                </router-link>
+                <router-link  v-if="item.prefix=='微页面分类'" :to="{path: '/type',query:{shopid:storeId,channelId:item.url}}">
+                    <section class="headportrait headportraitwo">
+                        <h2>{{item.title}}</h2>
+                        <div class="headportrait-div">
+                            <p></p>
+                            <span class="headportrait-div-bottom">
+                                <svg fill="#d8d8d8">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </section>
+                </router-link>
+            </section>
         </section>
 </template>
 
@@ -26,7 +78,7 @@
                
             }
         },
-        props: ['content'],
+        props: ['content','storeId'],
     }
 </script>
 
