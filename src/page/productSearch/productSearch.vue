@@ -1,15 +1,15 @@
 <template>
     <lazy-render :time="300">
         <div>
-            <form class="search_form">
+            <div class="search_form">
                 <button type="submit" class="custom-search-button"></button>
-                <input type="search" name="search" placeholder="请输入商品关键字" class="search_input" v-model="searchValue" @blur="searchTarget()">
-            </form>
+                <input type="text" placeholder="请输入商品关键字" class="search_input" v-model="searchValue" @focus="showHistory=true" @keyup="checkInput($event)">
+                <button type="text" style="width: 2.3rem; margin-left: 0.6rem;border-radius: 0.2rem; border: none;  background: #fff;"  @click.stop.prevent="searchTarget()">搜索</button>
+            </div>
             <section v-load-more="loaderMore" v-if="productListArr.length!=0">
-    
                 <div class="double">
                     <div class="items" v-for="item in productListArr" :key="item.productId">
-                        <router-link :to="{path: '/productDetail/'+shopid+'/'+item.productId}">
+                        <router-link :to="{path:  routerPath+'/productDetail',query:{shopid:shopid,productid:item.productId}}">
                             <div class="placeholder">
                                 <img v-lazy="getImgPath(item.imageUrl)">
                                 <p class="mc">{{item.productName}}</p>
@@ -75,9 +75,11 @@
         getStore,
         setStore
     } from '../../config/mUtils'
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 searchHistory: [], // 搜索历史记录
                 showHistory: true, // 是否显示历史记录，只有在返回搜索结果后隐藏
@@ -104,6 +106,7 @@
             //this.showLoading = true;
             this.shopid = this.$route.query.shopid;
             this.pram.storeId = this.shopid;
+            this.routerPath=rootPath;
         },
         mixins: [loadMore, getImgPath],
         mounted() {
@@ -111,10 +114,16 @@
             if (getStore('searchHistory')) {
                 this.searchHistory = JSON.parse(getStore('searchHistory'));
             }
+             if(sessionStorage.serchVaule!=''){
+                this.pram.keyword=sessionStorage.serchVaule;
+                this.searchValue=sessionStorage.serchVaule;
+                me.getData();
+            }
             //开始监听scrollTop的值，达到一定程度后显示返回顶部按钮
             showBack(status => {
                 this.showBackStatus = status;
             });
+
         },
         computed: {
             //...mapState(['shopid']),
@@ -135,7 +144,7 @@
                     me.showLoading = true;
                     me.preventRepeatReuqest = true;
                     //数据的定位加20位
-                    me.pram.pageidx += 1;
+                    me.pram.pageidx =Number(me.pram.pageidx)+1;
                     goodsLists(me.pram).then(res => {
                         me.showLoading = false;
                         me.productListArr = [...this.productListArr, ...res.goods];;
@@ -171,7 +180,8 @@
                 let me = this;
                 me.productListArr = [];
                 me.showLoading = true;
-    
+                me.pram.keyword=this.searchValue;
+                sessionStorage.serchVaule=this.pram.keyword;
                 //获取数据
                 goodsLists(me.pram).then(res => {
                     me.showLoading = false;
@@ -188,22 +198,26 @@
                 });
             },
             //搜索结束后，删除搜索内容直到为空时清空搜索结果，并显示历史记录
-            checkInput() {
+            checkInput(ev) {
                 if (this.searchValue === '') {
                     this.showHistory = true; //显示历史记录
                     this.emptyResult = false; //隐藏搜索为空提示
-                } else {
-                    this.pram.keyword = this.searchValue;
-                    this.searchTarget();
-                }
+                } 
+                if(ev.keyCode==13){
+                     this.searchTarget();
+                 }
+                // else {
+                //     this.pram.keyword = this.searchValue;
+                //     this.searchTarget();
+                // }
             },
             //点击提交按钮，搜索结果并显示，同时将搜索内容存入历史记录
             async searchTarget(historyValue) {
                 if (historyValue) {
                     this.searchValue = historyValue;
                     this.pram.keyword = this.searchValue;
-                } else if (!this.searchValue) {
-                    return
+                } else{
+                    this.pram.keyword = this.searchValue;
                 }
                 //隐藏历史记录
                 this.showHistory = false;
@@ -234,6 +248,19 @@
                 }
                 setStore('searchHistory', this.searchHistory)
             },
+        },
+         beforeRouteEnter (to, from, next) {
+           if(from.path.indexOf("productDetail")>=0){
+              next(vm => {
+                vm.$data.showHistory=false;
+                vm.$data.pram.keyword=sessionStorage.serchVaule;
+                vm.$data.pram.storeId=vm.$route.query.shopid;
+                //console.log(vm.$data.pram);
+             });
+           }else{
+               next();
+           }
+           
         }
     }
 </script>

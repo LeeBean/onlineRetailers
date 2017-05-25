@@ -1,59 +1,64 @@
 <template>
-    <lazy-render :time="300">
-        <div class="order_detail_page">
-            <ul class="cho_top">
-                <li v-for="(item,index) in orderPackage" :class='{on: pageIndex ==index}' @click="pageChange(index)">
-                    <p>包裹{{index+1}}</p>
-                </li>
-            </ul>
-            <div class="co">
-                <div class="page" data-num="1">
-                    <div class="wl_info" v-for="product in productList">
-                        <div class="wl_img">
-                            <img v-lazy="getImgPath(product.imageUrl)">
+    <div class="order_detail_page">
+        <div v-show="!showLoading">
+            <lazy-render :time="300">
+                <ul class="cho_top">
+                    <li v-for="(item,index) in orderPackage" :class='{on: pageIndex ==index}' @click="pageChange(index)">
+                        <p>包裹{{index+1}}</p>
+                    </li>
+                </ul>
+                <div class="co">
+                    <div class="page" data-num="1">
+                        <div class="wl_info" v-for="product in productList">
+                            <div class="wl_img">
+                                <img v-lazy="getImgPath(product.imageUrl)">
+                            </div>
+                            <div class="wl_txt">
+                                <p class="wl_name">{{product.productName}}</p>
+                                <!---<p class="wl_label">5磅 巧克力味</p>-->
+                            </div>
+                            <div class="wl_price">
+                                <p class="peice">￥{{product.price}}</p>
+                                <p class="num">x{{product.productNumber}}</p>
+                            </div>
                         </div>
-                        <div class="wl_txt">
-                            <p class="wl_name">{{product.productName}}</p>
-                            <!---<p class="wl_label">5磅 巧克力味</p>-->
-                        </div>
-                        <div class="wl_price">
-                            <p class="peice">￥{{product.price}}</p>
-                            <p class="num">x{{product.productNumber}}</p>
-                        </div>
-                    </div>
-    
-                    <div class="wl_ques">
-                        <ul>
-                            <li>
-                                <p><span>包裹{{pageIndex+1}}：</span>{{orderPackage[pageIndex].total}}件物品</p>
-                            </li>
-                            <li>
-                                <p><span>物流公司：</span>{{orderPackage[pageIndex].logistics}}</p>
-                            </li>
-                            <li>
-                                <p><span>物流编号：</span>{{orderPackage[pageIndex].expressNo}}</p>
-                            </li>
-                            <li>
-                                <p><span>下单时间：</span>{{orderPackage[pageIndex].createTime}}</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="track-rcol">
-                        <div class="track-list">
-                            <ul style="padding-bottom: 30px;">
-                                <li v-for="wldata in dataList">
-                                    <i class="node-icon"></i>
-                                    <span class="txt">{{wldata.title}}</span>
-                                    <span class="time">{{wldata.createTime}}</span>
+
+                        <div class="wl_ques">
+                            <ul>
+                                <li>
+                                    <p><span>包裹{{pageIndex+1}}：</span>{{orderPackage[pageIndex].total}}件物品</p>
+                                </li>
+                                <li>
+                                    <p><span>物流公司：</span>{{orderPackage[pageIndex].logistics}}</p>
+                                </li>
+                                <li>
+                                    <p><span>物流编号：</span>{{orderPackage[pageIndex].expressNo}}</p>
+                                </li>
+                                <li>
+                                    <p><span>下单时间：</span>{{orderPackage[pageIndex].createTime}}</p>
                                 </li>
                             </ul>
                         </div>
+                        <div class="track-rcol" v-show="dataList.length>0">
+                            <div class="track-list">
+                                <ul style="padding-bottom: 30px;">
+                                    <li v-for="wldata in dataList">
+                                        <i class="node-icon"></i>
+                                        <span class="txt">{{wldata.title}}</span>
+                                        <span class="time">{{wldata.createTime}}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+            </lazy-render>
         </div>
-    </lazy-render>
+        <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+        <transition name="loading">
+            <loading v-show="showLoading"></loading>
+        </transition>
+    </div>
 </template>
 
 <script>
@@ -79,7 +84,7 @@
                 showAlert: false, //弹出提示框
                 show: false, //显示确认提示框
                 pageIndex: 0,
-                orderPackage: {},
+                orderPackage: [],
                 productList: [], //商品列表
                 dataList: [], //物流信息
                 pram: {
@@ -92,7 +97,6 @@
             this.shopid = this.$route.query.shopid;
             this.pram.storeId = this.$route.query.shopid;
             this.pram.orderId = this.$route.query.orderId;
-    
         },
         mounted() {
             this.initData();

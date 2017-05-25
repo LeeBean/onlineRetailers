@@ -38,3 +38,15 @@
 .white {
     width: 100%
 }
+
+.return_top {
+    position: fixed;
+    bottom: 3rem;
+    right: 0;
+    z-index: 9999999;
+    text-align: center;
+    padding: .8rem;
+    .back_top_svg {
+        @include wh(1.5rem, 1.5rem);
+    }
+}

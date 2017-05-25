@@ -29,33 +29,40 @@ Vue.use(LazyRender)
 const scrollBehavior = (to, from, savedPosition) => {
     if (savedPosition) {
         // savedPosition is only available for popstate navigations.
-        return savedPosition
+        //return savedPosition
     } else {
-        const position = {}
+        savedPosition = {}
             // new navigation.
             // scroll to anchor by returning the selector
         if (to.hash) {
-            position.selector = to.hash
+            savedPosition.selector = to.hash
         }
         // check if any matched route config has meta that requires scrolling to top
         if (to.matched.some(m => m.meta.scrollToTop)) {
             // cords will be used if no selector is provided,
             // or if the selector didn't match any element.
-            position.x = 0
-            position.y = 0
+            savedPosition.x = 0
+            savedPosition.y = 0
         }
         // if the returned position is falsy or an empty object,
         // will retain current scroll position.
-        return position
+        //return position
+    }
+    //console.log(savedPosition);
+    if (savedPosition && savedPosition.y > 0) {
+        setTimeout(() => {
+            window.scrollTo(0, savedPosition.y)
+        }, 500);
     }
 }
 const router = new VueRouter({
+    //mode: routerMode,
+    mode: 'history',
+    // hashbang: false,
+    // history: true,
+    scrollBehavior,
+    //transitionOnLoad: true,
     routes,
-    mode: routerMode,
-    //mode: 'history',
-    //hashbang: false,
-    //history: true,
-    //scrollBehavior,
     strict: process.env.NODE_ENV !== 'production'
 })
 

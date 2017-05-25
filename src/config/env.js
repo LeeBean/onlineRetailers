@@ -6,21 +6,23 @@
  * imgBaseUrl: 图片所在域名地址
  * 
  */
-let baseUrl = 'http://192.168.10.75:8080/';
-let baseUrl2 = 'http://192.168.10.75:8080/wap/index.html?a=v1/';
-const imgBaseUrl = 'http://www.jikeduo.com.cn/upload/';
+let baseUrl = 'http://192.168.10.82:8080/';
+let baseUrl2 = 'http://192.168.10.82:8080/wap/index.json?a=v1/';
+const imgBaseUrl = 'http://test.uzengroup.com/upload/';
 
-//let baseUrl = 'http://test.uzengroup.com/';
-//let baseUrl2 = 'http://test.uzengroup.com/wap/index.html?a=v1/';
-//const imgBaseUrl = 'http://www.jikeduo.com.cn/upload/';
+// let baseUrl = 'http://loaclhost:8080/';
+// let baseUrl2 = 'http://loaclhost:8080/wap/index.json?a=v1/';
+// const imgBaseUrl = 'http://test.uzengroup.com/upload/';
 
+// let baseUrl = '/';
+// let baseUrl2 = '/wap/index.json?a=v1/';
+// const imgBaseUrl = 'http://test.uzengroup.com/upload/';
+
+let rootPath = '/wap';
 let routerMode;
 if (process.env.NODE_ENV == 'development') {
-    // baseUrl = 'http://192.168.10.33:8080/';
     routerMode = 'hash'
 } else {
-    //baseUrl = 'http://www.jikeduo.com.cn/';
-    //baseUrl = '';
     routerMode = 'hash'
 }
 
@@ -28,5 +30,6 @@ export {
     baseUrl,
     baseUrl2,
     routerMode,
-    imgBaseUrl
+    imgBaseUrl,
+    rootPath
 }

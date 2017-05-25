@@ -137,8 +137,9 @@
  }
  
  .placeholder img {
-     width: 100%;
-     height: 6.39rem;
+     width: 80%;
+     height: 6.3rem;
+     margin-left: 10%;
  }
  
  p.mc {
@@ -180,7 +181,10 @@
  .return_top {
      position: fixed;
      bottom: 3rem;
-     right: 0.6rem;
+     right: 0;
+     z-index: 9999999;
+     text-align: center;
+     padding: .8rem;
      .back_top_svg {
          @include wh(1.5rem, 1.5rem);
      }

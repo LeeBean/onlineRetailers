@@ -7,12 +7,12 @@
                         <img v-lazy="getImgPath(myInfo.imageURL)">
                     </div>
                     <div class="txt">
-                        <p class="txt_t">{{myInfo.nickname?myInfo.nickname:"未知用户"}}</p>
+                        <p class="txt_t">{{myInfo.nickname?myInfo.nickname:""}}</p>
                         <!--<p class="txt_b">已绑定手机号<span> 15090980613</span></p>                                 -->
                     </div>
                 </div>
                 <div class="icon">
-                    <router-link :to='{path: "/order",query:{tab:0,shopid:shopid}}'>
+                    <router-link :to='{path:  routerPath+"/order",query:{tab:0,shopid:shopid}}'>
                         <div class="weui-cell weui-cell-access top">
                             <div class="weui-cell-bd">
                                 <span style="vertical-align: middle">
@@ -26,25 +26,25 @@
                     </router-link>
                     <div class="icon_div">
                         <ul>
-                            <router-link :to='{path: "/order",query:{tab:1,shopid:shopid}}'>
+                            <router-link :to='{path:  routerPath+"/order",query:{tab:1,shopid:shopid}}'>
                                 <li>
                                     <img src="../../images/icon_daifukuan@2x.png">
                                     <p class="icon_p">待付款</p>
                                 </li>
                             </router-link>
-                            <router-link :to='{path: "/order",query:{tab:2,shopid:shopid}}'>
+                            <router-link :to='{path:  routerPath+"/order",query:{tab:2,shopid:shopid}}'>
                                 <li>
                                     <img src="../../images/icon_daifahuo@2x.png">
                                     <p class="icon_p">待发货</p>
                                 </li>
                             </router-link>
-                            <router-link :to='{path: "/order",query:{tab:3,shopid:shopid}}'>
+                            <router-link :to='{path:  routerPath+"/order",query:{tab:3,shopid:shopid}}'>
                                 <li>
                                     <img src="../../images/icon_daishouhuo@2x.png">
                                     <p class="icon_p">待收货</p>
                                 </li>
                             </router-link>
-                            <router-link :to='{path: "/service"}'>
+                            <router-link :to='{path:routerPath+"/service"}'>
                                 <li>
                                     <img src="../../images/icon_tuihuan@2x.png">
                                     <p class="icon_p">售后</p>
@@ -53,7 +53,7 @@
                         </ul>
                     </div>
                 </div>
-                <router-link :to='{path: "/chooseAddress",query:{shopid:shopid,from:"me",type:1}}'>
+                <router-link :to='{path:  routerPath+"/chooseAddress",query:{shopid:shopid,from:"me",type:1}}'>
                     <div class="weui-cell weui-textnav top_t">
                         <div class="weui-cell-bd">
                             <span style="vertical-align: middle"> 我的收货地址 </span>
@@ -76,9 +76,11 @@
     import {userInfo } from 'src/service/getData'
     import {getImgPath } from 'src/components/common/mixin'
     import {wxHideOptionMenu } from 'src/config/mUtils'
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                routerPath:'',
                 imgBaseUrl,
                 shopid: '',
                 myInfo: {}
@@ -86,6 +88,7 @@
         },
         created() {
             this.shopid = this.$route.query.shopid;
+            this.routerPath=rootPath;
            wxHideOptionMenu();
         },
        

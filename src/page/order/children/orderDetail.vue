@@ -8,16 +8,16 @@
                 <div>
                     <div style="padding:5px 0;padding-bottom: 10px;">
                         <p class="order_sh d">
-                            <span>{{orderData.buyWayType=="0"?"收货人":"提货人"}}</span>
-                            <span style="margin-left:20px;">{{orderData.name}}</span>
-                            <span style="margin-left:70px;">{{orderData.mobile}}</span>
+                            <span>{{orderData.buyWayType=="0"?"收货人:":"提货人:"}}</span>
+                            <span style="margin-left:5px;">{{orderData.name}}</span>
+                            <span style="margin-left:20px;">{{orderData.mobile}}</span>
                         </p>
                         <p class="order_ad d">
                             <span>{{orderData.buyWayType=="0"?"收货地址":"提货地址"}}: </span>
                             <span>{{orderData.address}}</span>
                         </p>
-                        <p v-if="orderData.buyWayType==1" class="order_ad d" style="margin-top:5px;margin-left: 40px;">
-                            <span style="color:#fb5000;">请截图已保存到店时凭单号到店提货</span>
+                        <p v-if="orderData.buyWayType==1" class="order_ad d" style="margin-top:5px;margin-left: 1.7rem;">
+                            <span style="color:#fe5000;">请截图已保存到店时凭单号到店提货</span>
                         </p>
                     </div>
                 </div>
@@ -31,12 +31,14 @@
                 <ul class="order_info_one">
                     <li v-for="product in productList">
                         <div class="order_info_one_div">
-                            <router-link :to="{path: '/productDetail/'+shopid+'/'+product.productId}" class="thumb" style="color:#333;">
+                            <router-link :to="{path: routerPath+'/productDetail',query:{shopid:shopid,productid:product.productId}}" class="thumb" style="color:#333;">
                                 <img v-lazy="getImgPath(product.imageUrl)">
+                                <img v-show="product.isSoldOut=='1'" src="../../../images/icon_qiangguang.png" style="position: absolute;    width: 20%;height: 3.4rem; left: 0;">
                             </router-link>
+                            
                             <div>
                                 <p class="order_info_one_txt">
-                                    <router-link :to="{path: '/productDetail/'+shopid+'/'+product.productId}">
+                                    <router-link :to="{path:  routerPath+'/productDetail',query:{shopid:shopid,productid:product.productId}}">
                                         <span class="order_product_name">{{product.productName}}</span>
                                     </router-link>
                                 </p>
@@ -55,7 +57,7 @@
                             <p class="l_yf_num">¥ {{orderData.postage}}</p>
                         </div>
                     </li>
-                    <li>
+                    <li style="margin-top: -0.213rem;">
                         <div class="l_indent_content_shop_yf">
                             <p class="l_yf_p">进口税</p>
                             <p class="l_yf_num">¥ {{orderData.tax}}</p>
@@ -144,31 +146,20 @@
 </template>
 
 <script>
-    import {
-        mapState,
-        mapMutations
-    } from 'vuex'
-    import {
-        getImgPath
-    } from 'src/components/common/mixin'
-    import {
-        orderDetail,
-        cancelOrder,
-        queryTake,
-        deleteOrder,
-        orderPay
-    } from 'src/service/getData'
+    import {mapState, mapMutations} from 'vuex'
+    import {getImgPath} from 'src/components/common/mixin'
+    import {orderDetail,cancelOrder,queryTake,deleteOrder, orderPay } from 'src/service/getData'
     import loading from 'src/components/common/loading'
     import alertTip from 'src/components/common/alertTip'
     import loadingToast from 'src/components/common/loadingToast'
-    import {
-        isWeiXin,wxHideOptionMenu
-    } from 'src/config/mUtils'
-    
+    import {isWeiXin,wxHideOptionMenu } from 'src/config/mUtils'
+    import { rootPath } from 'src/config/env'
+
     export default {
     
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 showAlert: false, //弹出提示框
                 show: false, //显示确认提示框
@@ -195,6 +186,7 @@
             this.pram.storeId = this.shopid;
             this.pram.orderId = this.$route.query.id;
             this.oprOrderId = this.$route.query.id;
+            this.routerPath=rootPath;
             wxHideOptionMenu();
         },
         mounted() {
@@ -290,6 +282,11 @@
             },
             showAlipay() {
                 this.alipay = !this.alipay;
+                if( this.alipay){
+                    this.payType = 1;
+                }else{
+                    this.payType = 0;
+                }
             },
             //选择付款方式
             surePayway(type) {
@@ -327,11 +324,17 @@
                                         "paySign": res.orderPayInfo.paySign //微信签名 
                                     },
                                     function(res2) {
-                                        if (res2.err_msg == "get_brand_wcpay_request:ok") {
+                                       if (res2.err_msg == "get_brand_wcpay_request:ok") {
                                             me.showAlert = true;
                                             me.alertText = "订单支付成功！";
-                                            me.initData();
-                                        } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+                                            me.$router.push({path: me.routerPath+'/paySuccess',query:{shopid:me.shopid,id:res.orderId}});
+                                        } else if(res3.err_msg == "get_brand_wcpay_request:cancel"){
+                                            me.showAlert = true;
+                                            me.alertText = "订单支付取消！";
+                                        }else{
+                                            me.showAlert = true;
+                                            me.alertText = "订单支付失败！";
+                                        }
                                     });
                             }
                             if (typeof WeixinJSBridge == "undefined") {
@@ -383,7 +386,7 @@
             },
             ggLogistics2(order) { //查看物流
                 this.$router.push({
-                    path: '/logistics',
+                    path:  this.routerPath+'/logistics',
                     query: {
                         shopid: this.shopid,
                         orderId: order.orderId,

@@ -12,7 +12,7 @@
                         <li class="ui_list_li a">
                             <input type="text" placeholder="详细地址，如街道、楼牌号等" class="ipt_assd" v-model="addressData.address" maxlength="100">
                         </li>
-                        <li class="ui_list_li a set_default_address">
+                        <li class="ui_list_li a set_default_address" style="border-bottom:none;">
                             <span style="color: #a9a9a9;">设置为默认地址</span>
     
                             <input type="checkbox" v-model="addressData.isDefault" id="checkbox_c1" class="chk_3" /><label for="checkbox_c1"></label>
@@ -20,11 +20,11 @@
                         </li>
                     </ul>
                 </div>
-                <div id="order_identity_info" v-if="wherefrom=='confirm'&&ptype!='1'">
+                <div id="order_identity_info" style="margin-top:0.4rem;" v-if="wherefrom=='confirm'&&ptype!='1'">
                     <div class="ui_list">
                         <ul>
                             <li class="ui_list_li b">
-                                <input type="text" placeholder="请输入身份证号" v-model="addressData.identityNo" maxlength="30">
+                                <input type="text" style="padding: 0 0.7rem;" placeholder="请输入身份证号" v-model="addressData.identityNo" maxlength="30">
                             </li>
                             <!--<li class="hint" style="margin-top: 5px;margin-bottom: 10px;">非必填，购买免税仓发货则必须填写身份证号码</li>-->
                         </ul>
@@ -32,10 +32,9 @@
                     <div class="identity_pic_div" v-if="ptype=='3'">
                         <div class="front_div webuploader-container">
                             <div class="webuploader-pick">
-                                <img v-if="addressData.identityFront" :src="getImgPath(sybaseUrl+addressData.identityFront)" width="100%;" class="pic_overflow">
-                                <img v-if="!addressData.identityFront" src="../../../../images/shenfenzheng1@2x.png" width="100%;" class="pic_overflow">
-    
-                                <img v-show="!addressData.identityFront" src="../../../../images/icon@2x.png" width="63px" height="24px" class="pic_upload_but">
+                                <img v-if="addressData.identityFront!=''" :src="getImgPath(sybaseUrl+'upload'+addressData.identityFront)" width="100%;" class="pic_overflow">
+                                <img v-if="addressData.identityFront==''" src="../../../../images/shenfenzheng1@2x.png" width="100%;" class="pic_overflow">
+                                <img v-show="addressData.identityFront==''" src="../../../../images/icon@2x.png" width="63px" height="24px" class="pic_upload_but">
                                 <p class="pic_upload_text">身份证正面照</p>
                             </div>
                             <div class="opcity">
@@ -45,9 +44,9 @@
                         </div>
                         <div class="back_div webuploader-container">
                             <div class="webuploader-pick">
-                                <img v-if="addressData.identityBack" :src="getImgPath(sybaseUrl+addressData.identityBack)" width="100%;" class="pic_overflow">
-                                <img v-if="!addressData.identityBack" src="../../../..//images/shenfenzheng2@2x.png" width="100%;" class="pic_overflow">
-                                <img v-show="!addressData.identityBack" src="../../../../images/icon@2x.png" width="63px" height="24px" class="pic_upload_but">
+                                <img v-if="addressData.identityBack!=''" :src="getImgPath(sybaseUrl+'upload'+addressData.identityBack)" width="100%;" class="pic_overflow">
+                                <img v-if="addressData.identityBack==''" src="../../../..//images/shenfenzheng2@2x.png" width="100%;" class="pic_overflow">
+                                <img v-show="addressData.identityBack==''" src="../../../../images/icon@2x.png" width="63px" height="24px" class="pic_upload_but">
                                 <p class="pic_upload_text">身份证反面照</p>
                             </div>
                             <div class="opcity">
@@ -56,7 +55,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="info_hint info_hint1" v-if="ptype=='3'">
+                    <div class="info_hint info_hint1" style="padding-top: 10px;" v-if="ptype=='3'||ptype=='2'">
                         <div class="info_hint_left">
                             <img src="../../../../images/wenhao@2x.png">
                             <!--<span class="icon-wen"></span>-->
@@ -67,7 +66,7 @@
                         <p class="info_p red">如果上传身份证照片不清晰，可能会被海关拒绝清关，请您仔细检查。</p>
                     </div>
                 </div>
-                <div v-if="oprType=='edit'" class="del_div " @click="deleteAddr">删除地址</div>
+                <div v-if="oprType=='edit'" class="del_div " @click.stop.prevent="deleteAddr">删除地址</div>
             </section>
     
             
@@ -93,14 +92,14 @@
                 <section class="showChose" v-show="showChose" @click="closeAdd()">
                 </section>
                 <section class="address" v-show="showChose">
-                    <section class="title">
+                    <!--<section class="title">
                         <h4>请选择地址</h4>
                         <span @click="closeAdd()">×</span>
-                    </section>
-                    <section class="title" style="margin-bottom: 0.5rem">
-                        <div class="area" @click="provinceSelected()">{{Province?Province:info[0].name}}</div>
-                        <div class="area" @click="citySelected()" :class="City?'':'active'">{{City?City:'请选择'}}</div>
-                        <div class="area" @click="districtSelected()" :class="District?'':'active'" v-show="City">{{District?District:'请选择'}}</div>
+                    </section>-->
+                    <section class="title" style="height:2.rem;line-height:2.1rem;border-bottom:1px #eee solid;">
+                        <div class="area" @click="provinceSelected()" :class="showProvince?'active':''">{{Province?Province:'省份'}}</div>
+                        <div class="area" @click="citySelected()" :class="showCity?'active':''">{{City?City:'城市'}}</div>
+                        <div class="area" @click="districtSelected()" :class="showDistrict?'active':''">{{District?District:'区域'}}</div>
                     </section>
                     <ul>
                         <li class="addList" v-for="(v,k) in info" @click="getProvinceId(v.code, v.name, k)" v-show="showProvince" :class="v.selected ? 'active' : ''">{{v.name}}</li>
@@ -110,9 +109,9 @@
                 </section>
             </section>
             <loading-toast v-if="showLoadingToast" @closeTip="showLoadingToast = false" :loadingText="loadingText"></loading-toast>
-            <div@click.stop="addAddress" class="add_icon_footer">
+            <div @click.stop.prevent="addAddress" class="add_icon_footer">
                 <!--<img src="../../../images/add_address.png" height="24" width="24">-->
-                <span style="width: 90%;text-align: center; background: #fb5000; color: #fff; font-size: 0.6rem; height: 35px; line-height: 35px; border-radius: 5px;">保存</span>
+                <span style="width: 90%;text-align: center; background: #fe5000; color: #fff; font-size: 0.6rem; height: 35px; line-height: 35px; border-radius: 5px;">保存</span>
             </div>
         </lazy-render>
         <transition name="loading">
@@ -192,7 +191,8 @@
                     identityNo: '',
                     identityFront: '',
                     identityBack: '',
-                    isDefault: false
+                    isDefault: false,
+                    productType:'0'
                 }
             }
         },
@@ -211,6 +211,7 @@
                
                 if (this.choosedAddress) {
                     this.addressData = this.choosedAddress;
+                    //console.log( this.addressData);
                     this.Province = this.choosedAddress.provinceName;
                     this.City = this.choosedAddress.cityName;
                     this.District = this.choosedAddress.areaName;
@@ -224,6 +225,7 @@
             }else if(this.oprType == "add"&&!this.$route.query.hasDefault){
                 this.addressData.isDefault=true;
             }
+            //console.log(this.choosedAddress)
         },
         mixins: [getImgPath],
         components: {
@@ -235,7 +237,6 @@
             ...mapState([
                 'choosedAddress'
             ]),
-    
         },
         methods: {
     
@@ -282,34 +283,43 @@
             //保存地址信息
             async addAddress() {
                 let me = this;
-                me.showLoading = true;
                 if (!me.addressData.name) {
+                    
                     me.showAlert = true;
                     me.alertText = '请输入姓名'
+                    
+                    return;
                 } else if (!me.addressData.mobile) {
                     me.showAlert = true;
-                    me.alertText = '请输入电话号码'
+                    me.alertText = '请输入电话号码';
+                    return;
                 } else if (!me.addressData.provinceId || !me.addressData.cityId || !me.addressData.areaId) {
                     me.showAlert = true;
-                    me.alertText = '请选择地址'
+                    me.alertText = '请选择地址';
+                    return;
                 } else if (!me.addressData.address) {
                     me.showAlert = true;
-                    me.alertText = '请输入详细地址'
+                    me.alertText = '请输入详细地址';
+                    return;
                 }
+                if(me.addressData.isDefault){
+                    me.addressData.isDefault=1;
+                }else{
+                    me.addressData.isDefault=0;
+                }
+                me.addressData.productType=me.ptype;
+                me.showLoading = true;
                 //保存成功返沪上一页，否则弹出提示框
                 saveAddress(me.addressData).then(res => {
                     me.showLoading = false;
                     if (res.code == "1") {
                         me.showAlert = true;
-                        me.alertText = "添加成功";
+                        //me.alertText = "添加成功";
                         me.$router.go(-1);
                     } else {
                         me.showAlert = true;
                         me.alertText = res.msg;
                     }
-    
-                }).catch(function(err) {
-    
                 });
     
             },
@@ -398,14 +408,14 @@
                 }
     
                 try {
-                    this.$http.post(baseUrl + 'wap/uploadImage', data).then((response) => {
+                    this.$http.post(baseUrl + 'api/user/webUploadImage.msp', data).then((response) => {
                         me.showLoadingToast=false;
                         let res = response.body;
                         if (res.code == "1") {
                             if (tag == "1") {
-                                this.addressData.identityFront = res.imageURL;
+                                this.addressData.identityFront = res.userImage;
                             } else {
-                                this.addressData.identityBack = res.imageURL;
+                                this.addressData.identityBack = res.userImage;
                             }
                         }
                         this.showAlert = true;

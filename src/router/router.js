@@ -1,7 +1,9 @@
 import App from '../App'
+import { rootPath } from 'src/config/env'
 
 const home = r => require.ensure([], () => r(require('../page/home/home')), 'home')
 const innerPage = r => require.ensure([], () => r(require('../page/home/children/innerPage')), 'innerPage')
+const productGroup = r => require.ensure([], () => r(require('../page/home/children/productGroup')), 'productGroup')
 const search = r => require.ensure([], () => r(require('../page/search/search')), 'search')
 const type = r => require.ensure([], () => r(require('../page/type/type')), 'search')
 const productSearch = r => require.ensure([], () => r(require('../page/productSearch/productSearch')), 'productSearch')
@@ -15,6 +17,8 @@ const confirmOrder = r => require.ensure([], () => r(require('../page/confirmOrd
 const chooseAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/chooseAddress')), 'chooseAddress')
 const addAddress = r => require.ensure([], () => r(require('../page/confirmOrder/children/children/addAddress')), 'addAddress')
 const service = r => require.ensure([], () => r(require('../page/service/service')), 'service')
+const paySuccess = r => require.ensure([], () => r(require('../page/paySuccess/paySuccess')), 'paySuccess')
+    //const notfound = r => require.ensure([], () => r(require('../page/notfound/notfound')), 'notfound')
 
 
 export default [{
@@ -23,88 +27,98 @@ export default [{
     children: [ //二级路由。对应App.vue
         //地址为空时跳转home页面
         {
-            path: '',
-            redirect: '/home/1'
+            path: rootPath + '/',
+            redirect: rootPath + '/index'
         },
         //首页城市列表页
         {
-            path: '/home/:shopid',
+            path: rootPath + '/index',
             component: home
 
         },
         //首页内页
         {
-            path: '/innerPage',
+            path: rootPath + '/innerPage',
             component: innerPage,
+        },
+        //商品分组
+        {
+            path: rootPath + '/productGroup',
+            component: productGroup,
         },
         //搜索页
         {
-            path: '/search',
+            path: rootPath + '/search',
             component: search
         },
         //分类页
         {
-            path: '/type',
+            path: rootPath + '/type',
             component: type
         },
         //商品搜索
         {
-            path: '/productSearch',
+            path: rootPath + '/productSearch',
             component: productSearch
         },
         //购物车
         {
-            path: '/cart',
+            path: rootPath + '/cart',
             component: cart
         },
         //个人信息页
         {
-            path: '/profile',
+            path: rootPath + '/profile',
             component: profile
         },
 
         //商品详情
         {
-            path: '/productDetail/:shopid/:productid',
+            path: rootPath + '/productDetail',
             component: productDetail
         },
         //订单列表页
         {
-            path: '/order',
+            path: rootPath + '/order',
             component: order,
         },
         //物流信息
         {
-            path: '/logistics',
+            path: rootPath + '/logistics',
             component: logistics
 
         },
         //订单详情页
         {
-            path: '/orderDetail',
+            path: rootPath + '/orderDetail',
             component: orderDetail,
         },
 
 
         //确认订单页
         {
-            path: '/confirmOrder',
+            path: rootPath + '/confirmOrder',
             component: confirmOrder
         },
         //选择地址
         {
-            path: '/chooseAddress',
+            path: rootPath + '/chooseAddress',
             component: chooseAddress
         },
         //添加地址
         {
-            path: 'addAddress',
+            path: rootPath + '/addAddress',
             component: addAddress
         },
         //售后
         {
-            path: 'service',
+            path: rootPath + '/service',
             component: service
+        },
+        //支付成功
+        {
+            path: rootPath + '/paySuccess',
+            component: paySuccess
         }
 
     ]

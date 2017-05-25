@@ -1,7 +1,7 @@
 <template>
     <div class="order_page">
-        <lazy-render :time="300">
-            <div class="order_list_ul" v-if="cartList.length!=0">
+        <!--<lazy-render :time="300">-->
+            <div class="order_list_ul" v-if="cartList.length!=0" style="padding-top: 30px;">
                 <div class="head">
                     <div class="shop_name">
                         <img v-show="checkAll" src='../../images/icon_dagou@2x.png' class="operation_icon" @click="docheckAll(0)">
@@ -19,12 +19,14 @@
                     </div>
                     <div class="goods_info">
                         <div class="goods_img">
-                            <router-link :to="{path: '/productDetail/'+shopid+'/'+item.productId}">
+                            <router-link :to="{path: routerPath+'/productDetail',query:{shopid:shopid,productid:item.productId}}">
                                 <img v-lazy="getImgPath(item.imageUrl)">
+                              
                             </router-link>
+                            <img v-show="item.isSoldOut=='1'" src="../../images/icon_qiangguang.png" style="position: absolute; left: 8%;">
                         </div>
                         <div class="goods_name_price">
-                            <router-link :to="{path: '/productDetail/'+shopid+'/'+item.productId}">
+                            <router-link :to="{path:  routerPath+'/productDetail',query:{shopid:shopid,productid:item.productId}}">
                                 <div class="goods_name" style="position: relative;">
                                     <span class="name">{{item.title}}</span>
                                     <span class="taxation">税费：预计<span>{{item.tax*10000*item.quantity*10000/100000000}}</span></span>
@@ -54,7 +56,7 @@
             <div class="nocart_content" v-show="showNodata">
                 <p style="text-align: center;"><img src="../../images/gouwuche@2x.png"></p>
                 <div class="text">您的购物车还没有商品哦~</div>
-                <router-link :to='{path: "/home/"+shopid}' class="btn">去逛逛</router-link>
+                <router-link :to='{path:  routerPath+"/index",query:{shopid:shopid}}' class="btn">去逛逛</router-link>
             </div>
             <div class="footer" v-show="!showNodata">
                  <div class="goods_order_operation">
@@ -86,7 +88,7 @@
                     </div>
                 </section>
             </section>
-        </lazy-render>
+        <!--</lazy-render>-->
         <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
         <transition name="loading">
             <loading v-show="showLoading"></loading>
@@ -99,33 +101,20 @@
 </template>
 
 <script>
-    import {
-        mapState,
-        mapMutations
-    } from 'vuex'
+    import {mapState, mapMutations } from 'vuex'
     import headTop from 'src/components/header/head'
     import loading from 'src/components/common/loading'
-    import {
-        loadMore,
-        getImgPath
-    } from 'src/components/common/mixin'
-    import {
-        showBack,
-        animate
-    } from 'src/config/mUtils'
-    import {
-        cartLists,
-        addNumCart,
-        deleteCart,
-        cartCheck
-    } from 'src/service/getData'
+    import {loadMore,getImgPath } from 'src/components/common/mixin'
+    import {showBack,animate, setStore, getStore} from 'src/config/mUtils'
+    import {cartLists,addNumCart, deleteCart,cartCheck} from 'src/service/getData'
     import footGuide from 'src/components/footer/footGuide'
     import alertTip from 'src/components/common/alertTip'
     import {wxHideOptionMenu } from 'src/config/mUtils'
-    
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 offset: 0,
                 show: false, //显示确认提示框
@@ -146,9 +135,10 @@
                 showBackStatus: false, //显示返回顶部按钮
                 preventRepeatReuqest: false, //到达底部加载数据，防止重复加载
                 nomore: false, //没有更多啦
+                unchechcartid:[],//取消选中的购物车ID
                 pram: {
                     id: '',
-                    pagesize: 20,
+                    pagesize: 1000,
                     pageidx: 1
                 }, //数据请求参数
                 addcartpram: {
@@ -169,10 +159,13 @@
             this.pram.id = this.shopid;
             this.addcartpram.storeId = this.shopid;
             this.confirmpram.storeId = this.shopid;
+            this.routerPath=rootPath;
             wxHideOptionMenu();
         },
         mounted() {
             let me = this;
+            let uncheaksIds=JSON.parse(getStore("unchechcartids"));
+            //console.log(uncheaksIds);
             cartLists(me.pram).then(res => {
                 if (res.cartList.length == 0) {
                     this.showNodata = true;
@@ -181,14 +174,22 @@
                 }
                 this.cartList = res.cartList;
                 this.shopname = res.storeName;
+                for (var i = 0; i < this.cartList.length; i++) {
+                    for(var j=0;j<uncheaksIds.length;j++){
+                        if(this.cartList[i].cartId==uncheaksIds[j]){
+                            this.cartList[i].ischecked=false;
+                        }
+                    }
+                }
+                this.checkIsAll();
                 this.calculation();
-                this.showLoading = false;
+                me.showLoading = false;
                 //开始监听scrollTop的值，达到一定程度后显示返回顶部按钮
                 showBack(status => {
                     this.showBackStatus = status;
                 });
             }).catch(function(err) {
-                this.showLoading = false;
+                me.showLoading = false;
             });
         },
         mixins: [loadMore, getImgPath],
@@ -215,15 +216,26 @@
                     }
                     me.showLoading = true;
                     me.preventRepeatReuqest = true;
+                    let uncheaksIds=JSON.parse(getStore("unchechcartids"));
                     //数据的定位加20位
-                    me.pram.pageidx += 1;
+                    me.pram.pageidx = Number(me.pram.pageidx)+1;
                     goodsLists(me.pram).then(res => {
                         me.showLoading = false;
                         me.cartList = [...this.cartList, ...res.cartList];;
                         me.preventRepeatReuqest = false;
+                        
+                        for (var i = 0; i < me.cartList.length; i++) {
+                            for(var j=0;j<uncheaksIds.length;j++){
+                                if(me.cartList[i].cartId==uncheaksIds[j]){
+                                    me.cartList[i].ischecked=false;
+                                }
+                            }
+                        }
+                        me.checkIsAll();
                         if (res.cartList < 20) {
                             return
                         }
+                       
                     }).catch(function(err) {
                         me.showLoading = false;
                         me.preventRepeatReuqest = false;
@@ -256,7 +268,7 @@
                             if (res.code == "1") {
                                 this.SAVE_CART_ID(this.confirmpram.cartIds);
                                 me.$router.push({
-                                    path: '/confirmOrder',
+                                    path:  me.routerPath+'/confirmOrder',
                                     query: {
                                         shopid: me.shopid
                                     }
@@ -294,6 +306,12 @@
             //确定
             ggconfirmDel2() {
                 let me = this;
+                me.isEnter = false;
+                me.isLeave = true;
+                me.timer = setTimeout(() => {
+                    clearTimeout(this.timer)
+                    this.show = false;
+                }, 200)
                 deleteCart({
                     storeId: me.shopid,
                     cartIds: me.confirmpram.cartIds
@@ -304,29 +322,35 @@
                         me.showAlert = true;
                         me.alertText = res.msg;
                     }
-
                 }).catch(function(err) {
                     me.showLoading = false;
                 });
             },
+            //全选或者取消全选
             docheckAll(i) {
                 if (i == 0) {
                     this.checkAll = false;
                     this.cartList.forEach(item => {
                         item.ischecked = false;
                     })
-                    this.totalPrice = 0;
-                    this.totalSprice = 0;
+                    this.totalPrice = 0.00;
+                    this.totalSprice = 0.00;
+                    this.checkIsAll();
                 } else {
+                    this.totalPrice = 0.00;
+                    this.totalSprice = 0.00;
                     this.checkAll = true;
                     this.cartList.forEach(item => {
                         item.ischecked = true;
                         //计算总价 和总税费
                         this.totalPrice += (item.price * item.quantity);
                         this.totalSprice += (item.tax * item.quantity);
+                        this.totalPrice += this.totalSprice;
                     })
+                    //console.log(this.totalPrice);
                     this.totalPrice = this.totalPrice.toFixed(2);
                     this.totalSprice = this.totalSprice.toFixed(2);
+                    this.checkIsAll();
                 }
     
             },
@@ -339,12 +363,12 @@
             //数量减
             subtraction(item) {
                 if (item.quantity > 1) {
-                    item.ischecked = true;
+                    //item.ischecked = true;
                     this.tempNum = item.quantity;
                     //item.quantity -= 1;
                     item.quantity = Number(item.quantity) - 1;
-                    this.checkIsAll();
-                    this.calculation();
+                    //this.checkIsAll();
+                    //this.calculation();
                     //保存数量
                     this.addcartpram.num = item.quantity;
                     this.addcartpram.productId = item.productId;
@@ -359,12 +383,12 @@
                         this.alertText = '加入购物车的跨境商品数量最大不可超过20个!'
                         return;
                     }
-                    item.ischecked = true;
+                    //item.ischecked = true;
                     this.tempNum = item.quantity;
     
                     item.quantity = Number(item.quantity) + 1;
-                    this.checkIsAll();
-                    this.calculation();
+                    //this.checkIsAll();
+                    //this.calculation();
                     //保存数量
                     this.addcartpram.num = item.quantity;
                     this.addcartpram.productId = item.productId;
@@ -379,23 +403,29 @@
             //检查是否已经全选了
             checkIsAll() {
                 //不能使用forEach  因为无法跳出循环
-                for (var i = 0; i < this.cartList.length; i++) {
-                    if (!this.cartList[i].ischecked) {
-                        this.checkAll = false;
-                        break;
-                    } else {
-                        this.checkAll = true;
-                    }
+                this.checkAll = true;
+                this.unchechcartid=[];
+                for (let m = 0; m < this.cartList.length; m++) {
+                    if (!this.cartList[m].ischecked) {
+                        if( this.checkAll){
+                             this.checkAll = false;
+                        }
+                        this.unchechcartid.push(this.cartList[m].cartId);
+                       // break;
+                    } 
                 }
+                setStore("unchechcartids",this.unchechcartid);
+                //console.log(this.unchechcartid);
             },
             //计算税费和总价
             calculation() {
-                this.totalPrice = 0;
-                this.totalSprice = 0;
+                this.totalPrice = 0.00;
+                this.totalSprice = 0.00;
                 this.cartList.forEach(item => {
                     if (item.ischecked) {
                         this.totalPrice += (item.price * item.quantity);
                         this.totalSprice += (item.tax * item.quantity);
+                        this.totalPrice += this.totalSprice;
                     }
                 })
                 this.totalPrice = this.totalPrice.toFixed(2);
@@ -406,11 +436,29 @@
                 if (this.editTex == "编辑") {
                     this.editTex = "完成";
                     this.bntTex = '删除';
-                    //this.totalPrice = 0;
-                    //this.totalSprice = 0;
+                    this.totalPrice = 0;
+                    this.totalSprice = 0;
+                    this.checkAll = false;
+                    this.cartList.forEach(item => {
+                        item.ischecked = false;
+                    })
                 } else {
                     this.editTex = "编辑";
                     this.bntTex = '结算';
+                    this.checkAll = true;
+                    this.cartList.forEach(item => {
+                        item.ischecked = true;
+                    })
+                     let uncheaksIds=JSON.parse(getStore("unchechcartids"));
+                    for (var i = 0; i < this.cartList.length; i++) {
+                        for(var j=0;j<uncheaksIds.length;j++){
+                            if(this.cartList[i].cartId==uncheaksIds[j]){
+                                this.cartList[i].ischecked=false;
+                            }
+                        }
+                    }
+                    this.checkIsAll();
+                    //计算总价 和总税费
                     this.calculation();
                 }
     
@@ -429,9 +477,9 @@
                     item.quantity = this.tempNum;
                     return;
                 }
-                item.ischecked = true;
-                this.checkIsAll();
-                this.calculation();
+               // item.ischecked = true;
+               // this.checkIsAll();
+               // this.calculation();
                 //保存数量
                 this.addcartpram.num = item.quantity;
                 this.addcartpram.productId = item.productId;

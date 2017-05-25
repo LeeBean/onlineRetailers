@@ -201,7 +201,7 @@
     .area {
         display: inline-block;
         font-size: 0.24rem;
-        line-height: 0.88rem;
+        line-height: 1.2rem;
         margin-left: 0.42rem;
         color: #333;
     }
@@ -210,7 +210,7 @@
         width: 100%;
         padding-left: 0.32rem;
         font-size: 0.34rem;
-        line-height: 0.88rem;
+        line-height: 1.2rem;
         color: #333;
     }
     

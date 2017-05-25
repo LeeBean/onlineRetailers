@@ -1,24 +1,24 @@
 <template>
     <section id='foot_guide'>
-        <section @click = "gotoAddress({path: '/home/'+storeId})" class="guide_item">
-            <img  class="footer" v-if="$route.path.indexOf('home') != -1" src="../../images/footer/icon_shop1.png">
-            <img  class="footer" v-if="$route.path.indexOf('home') == -1" src="../../images/footer/icon_shop2.png">
-            <span v-if="$route.path.indexOf('home') != -1" class="active-font">店铺</span>
-            <span v-if="$route.path.indexOf('home') == -1">店铺</span>
+        <section  @click.stop.prevent = "gotoAddress({path: routerPath+'/index',query:{shopid:storeId}})" class="guide_item">
+            <img  class="footer" v-if="$route.path.indexOf('index') != -1" src="../../images/footer/icon_shop1.png">
+            <img  class="footer" v-if="$route.path.indexOf('index') == -1" src="../../images/footer/icon_shop2.png">
+            <span v-if="$route.path.indexOf('index') != -1" class="active-font">店铺</span>
+            <span v-if="$route.path.indexOf('index') == -1">店铺</span>
         </section>
-        <section @click = "gotoAddress({path: '/type?shopid='+storeId})" class="guide_item">
+        <section  @click.stop.prevent = "gotoAddress({path: routerPath+'/type?shopid='+storeId})" class="guide_item">
             <img  class="footer" v-if="$route.path.indexOf('type') != -1" src="../../images/footer/icon_type1.png">
             <img  class="footer" v-if="$route.path.indexOf('type') == -1" src="../../images/footer/icon_type2.png">
             <span v-if="$route.path.indexOf('type') != -1" class="active-font">分类</span>
             <span v-if="$route.path.indexOf('type') == -1">分类</span>
         </section>
-        <section @click = "gotoAddress('/cart?shopid='+storeId)" class="guide_item">
+        <section  @click.stop.prevent = "gotoAddress(routerPath+'/cart?shopid='+storeId)" class="guide_item">
             <img  class="footer" v-if="$route.path.indexOf('cart') != -1" src="../../images/footer/icon_cart1.png">
             <img  class="footer" v-if="$route.path.indexOf('cart') == -1" src="../../images/footer/icon_cart2.png">
             <span v-if="$route.path.indexOf('cart') != -1" class="active-font">购物车</span>
             <span v-if="$route.path.indexOf('cart') == -1">购物车</span>
         </section>
-        <section @click = "gotoAddress('/profile?shopid='+storeId)" class="guide_item">
+        <section  @click.stop.prevent = "gotoAddress(routerPath+'/profile?shopid='+storeId)" class="guide_item">
             <img  class="footer" v-if="$route.path.indexOf('profile') != -1||$route.path.indexOf('order')!=-1" src="../../images/footer/icon_me1.png">
             <img  class="footer" v-if="$route.path.indexOf('profile') == -1&&$route.path.indexOf('order') == -1" src="../../images/footer/icon_me2.png">
             <span v-if="$route.path.indexOf('profile') != -1||$route.path.indexOf('order') != -1" class="active-font">我的</span>
@@ -29,13 +29,18 @@
 
 <script>
     import {mapState} from 'vuex'
+    import { rootPath } from 'src/config/env'
     export default {
     	data(){
             return{
-                
+                routerPath:''
             }
         },
         props: ['storeId'],
+      
+        created() {
+             this.routerPath=rootPath;
+        },
         methods: {
         	gotoAddress(path){
         		this.$router.push(path)
@@ -79,7 +84,7 @@
         margin-top: .3rem;
     }
     .active-font{
-        color: #fb5000 !important;
+        color: #fe5000 !important;
     }
    
 </style>

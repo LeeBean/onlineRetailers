@@ -1,5 +1,5 @@
  .order_page {
-     padding-bottom: 1.95rem;
+     padding-bottom: 3rem;
      .head_top {
          background-color: #fff;
          position: fixed;
@@ -117,12 +117,16 @@
  }
  
  .head {
+     position: fixed;
      width: 100%;
      height: 1.7rem;
      border-top: 1px solid #eee;
      border-bottom: 1px solid #eee;
      line-height: 1.7rem;
      font-size: 0.6rem;
+     top: 0;
+     background: #fff;
+     z-index: 1000;
  }
  
  .shop_name {
@@ -150,10 +154,11 @@
  
  .goods_content {
      width: 100%;
-     height: 4.9rem;
+     //  height: 4.9rem;
      background: #fff;
      padding: 0.213rem 0;
-     border-bottom: 1px solid #EEE;
+     border-bottom: 1px solid #eee;
+     overflow: hidden;
  }
  
  .operation_img {
@@ -177,8 +182,8 @@
  
  .goods_img {
      float: left;
-     height: 26%;
      width: 26%;
+     overflow: hidden;
  }
  
  .goods_img img {
@@ -197,7 +202,7 @@
  .goods_name .name {
      font-size: 0.6rem;
      overflow: hidden;
-     //  height: 1.7rem;
+     line-height: 0.81rem;
      display: -webkit-box;
      -webkit-line-clamp: 2;
      -webkit-box-orient: vertical;
@@ -349,7 +354,7 @@
                  width: 5rem;
              }
              .quitlogin {
-                 background: #fb5000;
+                 background: #fe5000;
                  width: 5rem;
              }
          }

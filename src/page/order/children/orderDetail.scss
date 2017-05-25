@@ -85,7 +85,7 @@
      font-size: 0.5rem;
      line-height: 1.7rem;
      margin-right: 0.42rem;
-     color: #FB5000;
+     color: #fe5000;
  }
  
  .app-order ul {
@@ -98,8 +98,9 @@
  .order_info_one li {
      list-style: none;
      overflow: hidden;
+     position: relative;
      border-bottom: 1px solid #eee;
-     height: 5.1rem;
+     height: 4.1rem;
      width: 100%;
  }
  
@@ -154,7 +155,7 @@
  .l_yf_num_d {
      float: right;
      line-height: 1.28rem;
-     color: #FB5000;
+     color: #fe5000;
      font-size: 0.6rem;
  }
  
@@ -182,8 +183,9 @@
  
  .order_info_bot {
      padding: 0.42rem;
-     border-top: 0.42rem solid #ebebeb;
-     border-bottom: 0.42rem solid #ebebeb;
+     border-top: 0.42rem solid #f1f1f1;
+     border-bottom: 0.42rem solid #f1f1f1;
+     margin-bottom: 80px;
  }
  
  .l_indent_content_shop_bh {
@@ -228,8 +230,8 @@
  }
  
  .bordercolor1 {
-     color: #fb5000;
-     border-color: #fb5000;
+     color: #fe5000;
+     border-color: #fe5000;
  }
  
  .bordercolor2 {
@@ -301,7 +303,7 @@
                  width: 5rem;
              }
              .quitlogin {
-                 background: #fb5000;
+                 background: #fe5000;
                  width: 5rem;
              }
          }
@@ -465,7 +467,7 @@
                  color: #333;
              }
              svg {
-                 fill: #fb5000;
+                 fill: #fe5000;
              }
          }
      }

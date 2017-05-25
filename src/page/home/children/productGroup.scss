@@ -1,0 +1,116 @@
+.head_top {
+    background-color: #fff;
+    @include wh(100%, 1.95rem);
+}
+
+.search_none {
+    margin: 0 auto;
+    @include font(0.5rem, 1.75rem);
+    color: #999;
+    background-color: #fff;
+    text-align: center;
+    margin-top: 0.125rem;
+}
+
+.sc-goods-lis {
+    font-size: 0.52rem;
+    padding: 0.213rem 0;
+    list-style: none;
+    margin: 0;
+}
+
+.clearfix {
+    zoom: 1;
+}
+
+.goods-card {
+    position: relative;
+    padding: 0.213rem 0 0.213rem 0.213rem;
+    border: 1px solid #eee;
+    background: #fff;
+    width: 50%;
+    float: left;
+}
+
+.link {
+    display: block;
+    background: #fff;
+    margin: 0 0.1rem;
+}
+
+.photo-block img {
+    max-width: 80%;
+    margin-left: 10%;
+    height: 6rem;
+}
+
+.loader_more {
+    @include font(0.6rem, 3);
+    text-align: center;
+    color: #999;
+}
+
+.min-height-price {
+    margin-bottom: 0.43rem;
+    display: block;
+}
+
+.goods-price>span {
+    font-style: normal;
+    color: #ff6600;
+    font-size: 0.6rem;
+}
+
+.clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.btn1 {
+    position: absolute;
+    background-image: url(../../../images/icon_gouwuche.png);
+    right: .5rem;
+    bottom: 0.68rem;
+    height: 0.9rem;
+    width: 1rem;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.empty_data {
+    @include sc(0.5rem, #666);
+    text-align: center;
+    line-height: 2rem;
+}
+
+.return_top {
+    position: fixed;
+    bottom: 3rem;
+    right: 0;
+    z-index: 9999999;
+    text-align: center;
+    padding: .8rem;
+    .back_top_svg {
+        @include wh(1.5rem, 1.5rem);
+    }
+}
+
+.goods-title {
+    font-size: 0.6rem;
+    min-height: 1.56rem;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+// .router-fade-enter-active,
+// .router-fade-leave-active {
+//     transition: all .4s;
+// }
+// .router-fade-enter,
+// .router-fade-leave-active {
+//     transform: translate3d(2rem, 0, 0);
+//     opacity: 0;
+// }

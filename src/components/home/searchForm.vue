@@ -1,23 +1,25 @@
 <template>
     <div class="custom-search">
         <button type="submit" class="custom-search-button"></button>
-        <router-link :to='{path: "/search",query:{shopid:storeId}}' >
+        <router-link :to='{path: routerPath+"/search",query:{shopid:storeId}}' >
             <input  type="search" class="custom-search-input" placeholder="商品搜索：请输入商品关键字" name="q" value="" readonly="true">
         </router-link>
     </div>
 </template>
 
 <script>
-    import {
-        mapState
-    } from 'vuex'
+    import {mapState} from 'vuex'
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
-                 //shopid:''
+                 routerPath:''
             }
         },
-        props: ['storeId','storeId'],
+         created() {
+             this.routerPath=rootPath;
+        },
+        props: ['storeId'],
     }
 </script>
 

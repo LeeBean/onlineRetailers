@@ -76,19 +76,20 @@ export const getImgPath = {
         getImgPath(path) {
             let suffix;
             if (!path) {
-                return 'http://www.jikeduo.com.cn/upload/thumbnail/585736477ef96.jpg'
+                return 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAADIAQMAAACXljzdAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAADUExUReXk5JUmPxgAAAAcSURBVFjD7cGBAAAAAMOg+VNf4QBVAQAAAAB8BhRQAAEAnyMVAAAAAElFTkSuQmCC'
             }
-            if (path.indexOf('http') == -1 && path.indexOf('default') == -1) {
-                path = imgBaseUrl + path
+            if (path.indexOf('http') == -1) {
+                if (path.indexOf("upload") > 0) {
+                    path = path.replace("upload", "");
+                    path = path.substr(1);
+                }
+                path = imgBaseUrl + path;
             }
             if (path.indexOf('jpeg') !== -1) {
                 suffix = '.jpeg'
             } else {
                 suffix = '.png'
             }
-            //let url = '/' + path.substr(0, 1) + '/' + path.substr(1, 2) + '/' + path.substr(3) + suffix;
-            //return imgBaseUrl + url
-
             return path
         },
     }

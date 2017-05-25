@@ -3,7 +3,7 @@
         <lazy-render :time="300">
             <div v-show="!showLoading">
                 <nav class="msite_nav">
-                    <div class="swiper-container">
+                    <div class="swiper-container" style="background: #fff;">
                         <div class="swiper-wrapper">
                             <div class="swiper-slide" v-for="item in headerImageList">
                                 <img :src="getImgPath(item.imageUrl)" style="width: 100%;">
@@ -28,9 +28,15 @@
                         </div>
                         <div class="weui-cell-ft"></div>
                     </div>
+                    <div class="weui-cell weui-cell-access" v-show="productInfoproductType=='3'">
+                        <div class="weui-cell-bd">
+                            <span style="vertical-align: middle"><p class="dp">重量：<span id="yunfei"> {{productInfo.totalWeights}}g</span><span style="font-size:0.5rem;color:#999;">{{weightDesc}}</span></p>
+                            </span>
+                        </div>
+                    </div>
                     <div class="weui-cell weui-cell-access">
                         <div class="weui-cell-bd">
-                            <span style="vertical-align: middle"><p class="dp">运费：<span id="yunfei"> {{postage}}元</span><span style="font-size:0.5rem;color:#999;">{{weightDesc}}</span></p>
+                            <span style="vertical-align: middle"><p class="dp">运费：<span id="yunfei"> {{postage}}元</span></p>
                             </span>
                         </div>
                     </div>
@@ -75,14 +81,14 @@
                     <section class="showChose" v-show="showChose" @click="closeAdd()">
                     </section>
                     <section class="address" v-show="showChose">
-                        <section class="title">
+                        <!--<section class="title">
                             <h4>请选择地址</h4>
                             <span @click="closeAdd()">×</span>
-                        </section>
-                        <section class="title" style="margin-bottom: 0.5rem">
-                            <div class="area" @click="provinceSelected()">{{Province?Province:info[0].name}}</div>
-                            <div class="area" @click="citySelected()" :class="City?'':'active'">{{City?City:'请选择'}}</div>
-                            <div class="area" @click="districtSelected()" :class="District?'':'active'" v-show="City">{{District?District:'请选择'}}</div>
+                        </section>-->
+                        <section class="title" style="height:2.rem;line-height:2.1rem;border-bottom:1px #eee solid;">
+                            <div class="area" @click="provinceSelected()" :class="showProvince?'active':''">{{Province?Province:'省份'}}</div>
+                            <div class="area" @click="citySelected()" :class="showCity?'active':''">{{City?City:'城市'}}</div>
+                            <div class="area" @click="districtSelected()" :class="showDistrict?'active':''">{{District?District:'区域'}}</div>
                         </section>
                         <ul>
                             <li class="addList" v-for="(v,k) in info" @click="getProvinceId(v.code, v.name, k)" v-show="showProvince" :class="v.selected ? 'active' : ''">{{v.name}}</li>
@@ -98,7 +104,7 @@
                     <div class="choose_type_Container" v-if="showBuy">
                         <div class="gm-task">
                             <div class="price_div">
-                                <div class="price_l sf_txt">¥239.00</div>
+                                <div class="price_l sf_txt">¥{{productInfo.price}}</div>
                                 <div class="sf_close choose" @click="closeBuy">
                                     <img src="../../images/icon_guanbi@2x.png">
                                 </div>
@@ -111,9 +117,9 @@
                                     <span class="input-number-increment" @click="add();">+</span>
                                 </div>
                             </div>
-                            <div class="weui-cell weui-cell_access list_we" @click="openSf">
+                            <div class="weui-cell weui-cell_access list_we" v-show="productInfo.productType=='2'" @click="openSf">
                                 <p class="list_p">税费</p>
-                                <p class="list_r">¥ {{productInfo.tax}}</p>
+                                <p class="list_r">¥ {{productInfo.tax*addcartpram.num|sfFixed}}</p>
                                 <div class="weui-cell-ft  list_ft"></div>
                             </div>
                             <div class="sf_none" v-show="showsf">
@@ -152,19 +158,21 @@
             </div>
     
             <footer class="foot_div">
-                <router-link :to='{path: "/home/"+shopid}'>
+                <router-link :to='{path:  routerPath+"/index",query:{shopid:shopid}}'>
                     <div class="zy ff" style="background:#fff">
                         <img src="../../images/icon_shouye@2x.png"> 主页
                     </div>
                 </router-link>
-                <router-link :to='{path: "/cart",query:{shopid:shopid}}'>
+                <router-link :to='{path:  routerPath+"/cart",query:{shopid:shopid}}'>
                     <div class="gwc ff" style="background:#fff">
                         <p class="addcart-goods-num" v-show="quantity>0">{{quantity}}</p>
                         <img src="../../images/icon_gouwuche@2x.png"> 购物车
                     </div>
                 </router-link>
-                <button class="jr_gwc bt" @click="addCart" style="border-right: 1px #fff solid;">加入购物车</button>
-                <button class="gm bt" @click="buyNow">立即购买</button>
+                <button class="jr_gwc bt"  v-show="productInfo.isSoldOut!='1'" @click="addCart" style="border-right: 1px #fff solid;">加入购物车</button>
+                <button class="gm bt"  v-show="productInfo.isSoldOut!='1'"  @click="buyNow">立即购买</button>
+                <button class="bt" v-show="productInfo.isSoldOut=='1'" style="width: 61%;background: #999;">暂无库存</button>
+                
             </footer>
         </lazy-render>
         <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
@@ -175,30 +183,19 @@
 </template>
 
 <script>
-    import {
-        mapState,
-        mapMutations
-    } from 'vuex'
+    import { mapState,mapMutations} from 'vuex'
     import loading from 'src/components/common/loading'
-    import {
-        getImgPath
-    } from 'src/components/common/mixin'
-    import {
-        getCityList,
-        productDetail,
-        addNumCart,
-        orderCheckDetail,
-        checkBuy,
-        getPostage
-    } from 'src/service/getData'
+    import { getImgPath } from 'src/components/common/mixin'
+    import { getCityList, productDetail, addNumCart,orderCheckDetail, checkBuy, getPostage} from 'src/service/getData'
     import {wxShowOptionMenu } from 'src/config/mUtils'
     import alertTip from 'src/components/common/alertTip'
     import 'src/plugins/swiper.min.js'
     import 'src/style/swiper.min.css'
-    
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 productId: '',
                 showAlert: false, //弹出框
@@ -248,22 +245,23 @@
             getCityList().then(res => {
                 this.info = res;
             });
-            me.shopid = me.$route.params.shopid;
-            me.productId = me.$route.params.productid;
+            me.shopid = me.$route.query.shopid;
+            me.productId = me.$route.query.productid;
             me.addcartpram.storeId = me.shopid;
             me.addcartpram.productId = me.productId;
+            me.routerPath=rootPath;
             wxShowOptionMenu();
         },
         mounted() {
             let me = this;
             productDetail({
-                id: me.productId
+                id: me.productId,
+                storeId: me.shopid
             }).then(res => {
                 this.showLoading = false;
                 if (res.code == "1") {
                     me.headerImageList = res.headerImageList;
                     me.productInfo = res.data;
-
                     getPostage({
                         number: me.addcartpram.num,
                         wholesaleId: me.productId,
@@ -275,7 +273,7 @@
                             me.weightDesc = res.weightDesc;
                         }
                     });
-                   // me.quantity = res.cartProductNumbers;
+                    me.quantity = res.data.cartProductNumbers;
                     setTimeout(() => {
                         new Swiper('.swiper-container', {
                             pagination: '.swiper-pagination',
@@ -416,6 +414,8 @@
                 if (this.oprType == "1") { //加入购物车
                     addNumCart(this.addcartpram).then(res => {
                         if (res.code == "1") { //成功
+                            this.showAlert = true;
+                            this.alertText ="添加购物车成功！";
                             this.quantity = res.cartProductNumbers;
                             this.showBuy = !this.showBuy;
                         } else {
@@ -432,7 +432,7 @@
                     }).then(res => {
                         if (res.code == "1") { //成功
                             me.$router.push({
-                                path: '/confirmOrder',
+                                path:  me.routerPath+'/confirmOrder',
                                 query: {
                                     shopid: me.shopid,
                                     id: me.productId,
@@ -451,12 +451,17 @@
             },
             openSf(){
                 //var mproductType = this.orderInfo.productType; //商品类别 1-国内 2-跨境 3-直邮
-                if( me.productInfo.productType=="2"){
+                if( this.productInfo.productType=="2"){
                     this.showsf=!this.showsf;
                 }
                 
             }
     
+        },
+        filters: {
+            sfFixed: function(value) {
+                return value.toFixed(2);
+            }
         },
         watch: {
     

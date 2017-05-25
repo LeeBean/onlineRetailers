@@ -1,17 +1,16 @@
 <template>
     <div class="order_page">
-        <lazy-render :time="300">
+        <lazy-render :time="300" style="margin-bottom: 60px;">
             <header class="head_top">
                 <div class="tabber">
                     <span :class='{active: orderStatus =="0"}' @click="orderStatusChange(0)">全部</span>
                     <span :class='{active: orderStatus =="1"}' @click="orderStatusChange(1)">待付款</span>
                     <span :class='{active: orderStatus =="2"}' @click="orderStatusChange(2)">待发货</span>
-                    <span :class='{active: orderStatus =="3"}' @click="orderStatusChange(3)">待收货</span>
+                    <span :class='{active: orderStatus =="3"}' @click="orderStatusChange(3)">已发货</span>
                     <span :class='{active: orderStatus =="4"}' @click="orderStatusChange(4)">已完成</span>
                     <span :class='{active: orderStatus =="5"}' @click="orderStatusChange(5)">已取消</span>
                 </div>
             </header>
-    
             <div class="order_list_ul">
                 <div v-if="emptyResult" class="empty-list list-finished" style="padding-top: 60px;">
                     <div>
@@ -19,7 +18,7 @@
                         <p class="font-size-12">好东西，手慢无</p>
                     </div>
                     <div>
-                        <router-link :to="{path: '/home/'+shopid}" class="tag tag-big tag-orange" style="padding:8px 30px;">去逛逛</router-link>
+                        <router-link :to="{path:  routerPath+'/index',query:{shopid:shopid}}" class="tag tag-big tag-orange" style="padding:8px 30px;">去逛逛</router-link>
                     </div>
                 </div>
                 <ul v-load-more="loaderMore" v-if="!emptyResult">
@@ -30,7 +29,10 @@
                         <section class="order-content" style="display:block;" v-for="product in item.productList" @click="showDetail(item.orderId,item.storeId)">
                             <div class="block block-list block-border-top-none block-border-bottom-none">
                                 <div class="block-item name-card name-card-3col clearfix">
-                                    <div style="width:58px;float:left;"> <img v-lazy="getImgPath(product.imageUrl)" style="width: 2.9rem;height: 2.9rem;"> </div>
+                                    <div style="width:58px;float:left;"> 
+                                        <img v-lazy="getImgPath(product.imageUrl)" style="width: 2.9rem;height: 2.9rem;"> 
+                                        <img v-show="product.isSoldout=='1'" src="../../images/icon_qiangguang.png" style="position: absolute;top: 0.34rem;width: 2.9rem;height: 2.9rem;">
+                                    </div>
                                     <div class="detail">
                                         <p style="margin-bottom:6px;font-size: 14px;">{{product.productName}}</p>
                                     </div>
@@ -49,14 +51,14 @@
                             <p v-if="item.status==1" @click="docancelOrder(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor2" style="float:right">取消</p>
                             <p v-if="item.status==1" @click="doPayOrder(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor1" style="float:right">付款</p>
                             <p v-if="item.status==3" @click="doSureGet(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor1" style="float:right">确认收货</p>
-                            <p v-if="item.status==3" @click="goLogistics(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor1" style="float:right">查看物流</p>
-                            <p v-if="item.status==4|item.status==5" @click="doDelOrder(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor2" style="float:right">删除</p>
+                            <p v-if="item.status==3||item.status==4" @click="goLogistics(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor1" style="float:right">查看物流</p>
+                            <p v-if="item.status==4||item.status==5" @click="doDelOrder(item)" class="orange-color js-delete-order font-size-12 btn-payment bordercolor2" style="float:right">删除</p>
                         </div>
                     </li>
                 </ul>
             </div>
             <!--<div class="right-icon">
-                <router-link :to='{path: "/cart",query:{shopid:this.shopid}}'>
+                <router-link :to='{path:  routerPath+"/cart",query:{shopid:this.shopid}}'>
                     <img src="../../images/shopping-cart.png">
                 </router-link>
             </div>-->
@@ -133,38 +135,21 @@
 </template>
 
 <script>
-    import {
-        mapState,
-        mapMutations
-    } from 'vuex'
+    import { mapState, mapMutations } from 'vuex'
     import headTop from 'src/components/header/head'
     import loading from 'src/components/common/loading'
     import footGuide from 'src/components/footer/footGuide'
     import alertTip from 'src/components/common/alertTip'
     import loadingToast from 'src/components/common/loadingToast'
+    import { rootPath } from 'src/config/env'
+    import {orderList, cancelOrder, queryTake, deleteOrder, orderPay} from 'src/service/getData'
+    import { getImgPath, loadMore} from 'src/components/common/mixin'
+    import {showBack, animate, isWeiXin, wxHideOptionMenu} from 'src/config/mUtils'
 
-    import {
-        orderList,
-        cancelOrder,
-        queryTake,
-        deleteOrder,
-        orderPay
-    } from 'src/service/getData'
-    import {
-        getImgPath,
-        loadMore
-    } from 'src/components/common/mixin'
-    import {
-        showBack,
-        animate,
-        isWeiXin,
-        wxHideOptionMenu
-    } from 'src/config/mUtils'
-
-    
     export default {
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 orderList: [], //订单列表
                 showAlert: false, //弹出提示框
@@ -192,7 +177,7 @@
                 orderPram: {
                     storeId: '',
                     status: '0',
-                    pageidx: '1',
+                    pageidx: 1,
                     pagesize: 20
                 } //请求对象
             }
@@ -205,6 +190,7 @@
             }
             this.orderPram.storeId = this.shopid;
             this.orderPram.status = this.orderStatus;
+             this.routerPath=rootPath;
             wxHideOptionMenu();
         },
         mounted() {
@@ -230,7 +216,7 @@
                 //this.SAVE_ORDER(item);
                 this.preventRepeat = false;
                 this.$router.push({
-                    path: '/orderDetail',
+                    path:  this.routerPath+'/orderDetail',
                     query: {
                         shopid: storeId,
                         id: id
@@ -248,20 +234,21 @@
                     me.showLoading = true;
                     me.preventRepeatReuqest = true;
                     //数据的定位加20位
-                    me.orderPram.pageidx += 1;
+                    me.orderPram.pageidx =Number(me.orderPram.pageidx)+1;
                     orderList(me.orderPram).then(res => {
                         me.showLoading = false;
                         me.orderList = [...this.orderList, ...res.orderList];;
                         me.preventRepeatReuqest = false;
-                        if (res.orderList.length <= me.orderPram.pagesize) {
+                        if (res.orderList.length < me.orderPram.pagesize) {
                             me.nomore = true;
-                            return;
-    
+                            return;   
                         }
                     }).catch(function(err) {
                         me.showLoading = false;
                         me.preventRepeatReuqest = false;
                     });
+                }else{
+                      me.nomore = true;
                 }
             },
             getOrderList() {
@@ -274,15 +261,13 @@
                         if (res.orderList.length == 0) {
                             me.emptyResult = true;
                         } else {
-                            if (res.orderList.length <= me.orderPram.pagesize) {
+                            if (res.orderList.length < me.orderPram.pagesize) {
                                 me.nomore = true;
                             }
                             me.emptyResult = false;
                             me.orderList = res.orderList;
                         }
-    
                     }
-    
                 }).catch(function(err) {
                     me.showLoading = false;
                 });
@@ -303,6 +288,7 @@
                 this.orderList = [];
                 this.orderStatus = id;
                 this.orderPram.status = id;
+                this.orderPram.pageidx = 1;
                 this.getOrderList();
             },
             doOprOrder() {
@@ -403,7 +389,7 @@
             },
             goLogistics(order) { //查看物流
                 this.$router.push({
-                    path: '/logistics',
+                    path:  this.routerPath+'/logistics',
                     query: {
                         shopid: order.storeId,
                         orderId: order.orderId
@@ -423,6 +409,11 @@
             },
             showAlipay() {
                 this.alipay = !this.alipay;
+                if( this.alipay){
+                    this.payType = 1;
+                }else{
+                    this.payType = 0;
+                }
             },
             submitPay() {
                 let me = this;
@@ -453,8 +444,14 @@
                                         if (res2.err_msg == "get_brand_wcpay_request:ok") {
                                             me.showAlert = true;
                                             me.alertText = "订单支付成功！";
-                                            me.getOrderList();
-                                        } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+                                            me.$router.push({path: me.routerPath+'/paySuccess',query:{shopid:me.shopid,id:res.orderId}});
+                                        } else if(res3.err_msg == "get_brand_wcpay_request:cancel"){
+                                            me.showAlert = true;
+                                            me.alertText = "订单支付取消！";
+                                        }else{
+                                            me.showAlert = true;
+                                            me.alertText = "订单支付失败！";
+                                        }
                                     });
                             }
                             if (typeof WeixinJSBridge == "undefined") {

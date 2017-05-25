@@ -51,7 +51,7 @@ npm run build
 # 项目布局
 
 ```
-.
+
 ├── build                                       // webpack配置文件
 ├── config                                      // 项目打包路径
 ├── web                                         // 上线项目文件，放在服务器即可正常访问
@@ -100,6 +100,8 @@ npm run build
 │   │   │   │   ├── logistics.vue               // 物流信息
 │   │   │   │   └── orderDetail.vue             // 订单详情页
 │   │   │   └── order.vue                       // 订单列表页
+│   │   ├── paySuccess
+│   │   │   └── paySuccess.vue                  // 订单支付成功页
 │   │   ├── productDetail
 │   │   │   └── productDetail.vue               // 商品详情页
 │   │   ├── productSearch

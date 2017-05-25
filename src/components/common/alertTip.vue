@@ -2,10 +2,10 @@
     <div class="alet_container">
         <section class="showChose" @click="closeTip"></section>
 	    <section class="tip_text_container">
-            <div class="tip_icon">
+            <!--<div class="tip_icon">
                 <span></span>
                 <span></span>
-            </div>
+            </div>-->
             <p class="tip_text">{{alertText}}</p>
         </section>
     </div>
@@ -22,7 +22,7 @@
         mounted(){
             setTimeout(()=>{
                 this.$emit('closeTip')
-            },1500)
+            },2000)
         },
         props: ['alertText'],
         methods: {
@@ -65,9 +65,9 @@
         margin-left: -4rem;
         width: 8rem;
         animation: tipMove .4s ;
-        background-color: rgba(255,255,255,1);
+        background-color: rgba(0, 0, 0, 0.7);
         border: 1px;
-        padding-top: .6rem;
+        // padding-top: .6rem;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -96,7 +96,7 @@
             }
         }
         .tip_text{
-            @include sc(.55rem, #333);
+            @include sc(.55rem, #fff);
             line-height: .9rem;
             text-align: center;
             padding: 0.5rem .4rem;
@@ -105,7 +105,7 @@
             @include sc(.6rem, #fff);
             // font-weight: bold;
             margin-top: 1rem;
-            background-color: #fb5000;
+            background-color: #fe5000;
             width: 100%;
             text-align: center;
             line-height: 1.8rem;

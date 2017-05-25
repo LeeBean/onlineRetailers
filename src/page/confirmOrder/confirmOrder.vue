@@ -1,6 +1,7 @@
 <template>
     <div class="order_detail_page">
-        <lazy-render :time="300">
+        <lazy-render :time="300" style="margin-bottom: 60px;">
+             <div v-show="!showLoading">
             <div class="top" style="background:#fff;">
                 <span class="store_icon"></span>
                 <p>店铺：{{orderInfo.storeName}}</p>
@@ -8,12 +9,11 @@
             <div class="list_info bg_white">
                 <ul>
                     <li class="info_li" v-for="item in orderInfo.productList">
-                        <router-link :to="{path: '/productDetail/'+shopid+'/'+item.productId}">
+                        <router-link :to="{path:  routerPath+'/productDetail',query:{shopid:shopid,productid:item.productId}}">
                             <div class="info_lidiv">
                                 <div class="info_imgdiv">
                                     <img v-lazy="getImgPath(item.imageUrl)" class="info_img">
                                 </div>
-    
                                 <p class="shop_txt">{{item.productName}}</p>
     
                                 <div class="info_price_num">
@@ -30,14 +30,14 @@
                 <p class="clear_order_goods_format"></p>
                 <p>进口税<span>¥{{orderInfo.tax}}</span></p>
                 <p class="clear_order_goods_format"></p>
-                <p class="yf">实际付款（含运费）<span class="yf_span">¥{{orderInfo.productAmount}}</span></p>
+                <p class="yf">实际付款（含运费）<span class="yf_span">¥{{orderInfo.orderAmount}}</span></p>
             </div>
             <div class="ui_list bg_white">
                 <a name="buy_way"></a>
                 <ul>
                     <li class="ui_list_li b ui_list_li_2" @click="showSendWayFun" style="border-bottom:none;">配送方式
                         <span class="icon-go icon_a"></span>
-                        <span class="choose" data-type="express">{{checkpram.buyWarType==0?"物流配送":"到店自提"}}</span>
+                        <span class="choose" data-type="express">{{checkpram.buyWarType==0?"快递配送":"到店自提"}}</span>
                     </li>
     
                 </ul>
@@ -51,10 +51,10 @@
                         暂无收货人资料，请添加
                     </div>
                     <div v-show="addressInfo.name" class="assd_info assd_info3">
-                        <span class="info_names">收件人</span>
+                        <span class="info_names">收件人:</span>
                         <span class="info_phone info_phones">{{addressInfo.name}}</span>
                         <p class="info_txt">{{addressInfo.address}}</p>
-    
+                        <p v-show="orderInfo.productType!=1&&addressInfo.identityNo==''" class="info_txt" style="color:#fe5000;font-size:0.5rem;margin-left: -0.213rem;">（未上传实名身份信息）</p>
                     </div>
                     <div class="assd_right_icon">
                         <span class="icon-go icon_a" style="line-height:60px;"></span>
@@ -82,8 +82,6 @@
                     <p style="font-size: 13px; color: #666;padding-top: 10px;">加州奥克兰中国城分店,奥兰多分店Lac1b店</p>
                 </div>
             </div>
-    
-    
             <transition name="fade">
                 <div class="cover" v-if="showSendWay" @click="showSendWayFun"></div>
             </transition>
@@ -104,7 +102,7 @@
                             </svg>
                         </li>
                     </ul>
-                    <div class="pay_msg6" style="margin-top: 20px;"><div  class="pay_button" @click="chooseSendWay(1)">确定</div></div>
+                    <div class="pay_msg6" style="margin-top: 20px;"><div  class="pay_button" @click="chooseSendWay()">确定</div></div>
                 </div>
             </transition>
     
@@ -120,7 +118,7 @@
                         </div>
                         <div class="pay_msg pay_msg2">
                             <span class="order_time_msg">请在72小时内完成支付</span>
-                            <span class="order_money">¥{{orderInfo.productAmount}}</span>
+                            <span class="order_money">¥{{orderInfo.orderAmount}}</span>
                         </div>
                         <div class="pay_msg pay_msg5" style="display:block;">
                             <img class="pay_icon" src="../../images/webcatpay.png">
@@ -149,11 +147,11 @@
                     <div class="ui_listh">
                         <ul>
                             <li class="ui_list_li a address_edit_name"><input type="text" placeholder="请填写收货人" maxlength="20" v-model="checkpram.name"></li>
-                            <li class="ui_list_li a address_edit_tel"><input type="tel" placeholder="请填写联系电话" maxlength="11" v-model="checkpram.mobile"></li>
+                            <li class="ui_list_li a address_edit_tel"><input type="tel" placeholder="请填写联系电话" maxlength="20" v-model="checkpram.mobile"></li>
                         </ul>
                     </div>
                     <div class="my_address_but">
-                        <button @click.stop="showActivitiesFun">确定</button>
+                        <button @click.stop.prevent="showActivitiesFun">确定</button>
                     </div>
                 </section>
             </transition>
@@ -163,6 +161,7 @@
                 <button class="foot_sub" style="" @click="sureOrder">确认订单</button>
             </div>
             <loading-toast v-if="showLoadingToast" @closeTip="showLoadingToast = false" :loadingText="loadingText"></loading-toast>
+            </div>
         </lazy-render>
         <transition name="loading">
             <loading v-show="showLoading"></loading>
@@ -182,10 +181,11 @@
     import alertTip from 'src/components/common/alertTip'
     import loadingToast from 'src/components/common/loadingToast'
     import {isWeiXin } from 'src/config/mUtils'
+    import { rootPath } from 'src/config/env'
     export default {
-    
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 showLoading: true, //显示加载动画
                 orderData: null,
@@ -224,7 +224,10 @@
             } else {
                 this.checkpram.cartIds = this.cart_id;
             }
-    
+            this.routerPath=rootPath;
+            if (this.choosedAddress) {
+                this.checkpram.addressId=this.choosedAddress.addressId;
+            }
         },
         mounted() {
             //alert(this.cart_id);
@@ -255,12 +258,12 @@
                     me.showLoading = false;
                     if (res.code == "1") {
                         me.orderInfo = res.data;
-                        if( res.addressInfo){
+                        if(res.addressInfo){
                             me.addressInfo = res.addressInfo;
                         }
-                        if (me.choosedAddress) {
-                            me.addressInfo = me.choosedAddress;
-                        }
+                        // if (me.choosedAddress) {
+                        //     me.addressInfo = me.choosedAddress;
+                        // }
                     } else {
                         me.$router.go(-1);
                     }
@@ -271,7 +274,7 @@
             goAddress() {
                 this.preventRepeat = false;
                 this.$router.push({
-                    path: '/chooseAddress',
+                    path: this.routerPath+'/chooseAddress',
                     query: {
                         shopid: this.shopid,
                         from:"confirm",
@@ -313,9 +316,10 @@
                 this.showPayWay = !this.showPayWay;
             },
             //选择物流方式
-            chooseSendWay(type) {
+            chooseSendWay() {
                 this.showSendWay = !this.showSendWay;
                 //this.checkpram.buyWarType = type;
+                this.initData();
             },
     
             choosePayWay(type) {
@@ -331,6 +335,11 @@
             },
             showAlipay() {
                 this.alipay = !this.alipay;
+                if( this.alipay){
+                    this.payType = 1;
+                }else{
+                    this.payType = 0;
+                }
             },
             //前往填写提货信息
             goAddGetInfo() {
@@ -367,7 +376,13 @@
                         orderPay(paybo).then(res2 => {
                             me.showLoadingToast=false;
                             if (res2.code == "1") {
-                                me.$router.push({path:'/orderDetail',query:{shopid:me.shopid,id:res.orderId}});
+                                // me.$router.push({
+                                //     path: '/orderDetail',
+                                //     query: {
+                                //         shopid: me.shopid,
+                                //         id: res.orderId
+                                //     }
+                                // });
                                 if (isWeiXin() && this.payType == 0) {
                                     function onBridgeReady() {
                                         WeixinJSBridge.invoke(
@@ -383,14 +398,14 @@
                                                 if (res3.err_msg == "get_brand_wcpay_request:ok") {
                                                     me.showAlert = true;
                                                     me.alertText = "订单支付成功！";
-                                                    // me.$router.push({
-                                                    //     path: '/orderDetail',
-                                                    //     query: {
-                                                    //         shopid: me.shopid,
-                                                    //         id: res.orderId
-                                                    //     }
-                                                    // });
-                                                } // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+                                                    me.$router.push({path: me.routerPath+'/paySuccess',query:{shopid:me.shopid,id:res.orderId}});
+                                                }else if(res3.err_msg == "get_brand_wcpay_request:cancel"){
+                                                    me.showAlert = true;
+                                                    me.alertText = "订单支付取消！";
+                                                }else{
+                                                    me.showAlert = true;
+                                                    me.alertText = "订单支付失败！";
+                                                }
                                             });
                                     }
                                     if (typeof WeixinJSBridge == "undefined") {
@@ -425,8 +440,16 @@
     
                 });
             }
+        },
+        beforeRouteLeave (to, from, next) {
+           if( this.showActivities){
+                this.showActivities=!this.showActivities;
+                next(false)
+            }else{
+                next()
+            }
         }
-       
+
     }
 </script>
   

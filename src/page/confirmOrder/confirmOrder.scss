@@ -115,7 +115,7 @@
         color: #333;
     }
     .payment_info p span.yf_span {
-        color: #FB5000;
+        color: #fe5000;
         font-size: 14px;
     }
     .ui_list {
@@ -136,6 +136,8 @@
         font-size: 13px;
         color: #333;
         margin-left: 30px;
+        position: absolute;
+        right: 1.5rem;
     }
     .order_assd2 {
         padding-bottom: 0;
@@ -176,9 +178,9 @@
         margin-right: 3px;
         font-size: 13px;
     }
-    .info_phones {
-        margin-left: 20px;
-    }
+    // .info_phones {
+    //     margin-left: 10px;
+    // }
     .info_phone {
         color: #666;
         font-size: 13px;
@@ -306,7 +308,7 @@
                 color: #333;
             }
             svg {
-                fill: #fb5000;
+                fill: #fe5000;
             }
         }
     }

@@ -3,18 +3,17 @@
     <!--一排两个-->
     <ul v-if="content.size=='1'" class="js-goods-list sc-goods-list pic clearfix size-1">
         <li v-for="item in content.goods" class="goods-card goods-list small-pic card">
-            <router-link :to="{path: '/productDetail/'+storeId+'/'+item.id}" :style="{height:content.buy_btn_type!='1'&&content.price!='1'?'8.945rem':'10rem'}" class="js-goods link clearfix">
+            <router-link :to="{path: routerPath+'/productDetail',query:{shopid:storeId,productid:item.id}}" :style="{height:content.buy_btn_type!='1'&&content.price!='1'?'8.945rem':'10rem'}" class="js-goods link clearfix">
                 <span class="photo-block"><img class="goods-photo js-goods-lazy" v-lazy="getImgPath(item.image)" style="display:inline;"></span>
                 <span class="info clearfix info-title">
                 <span  class="goods-title display-block">{{item.title}}</span>
                 <span class="goods-sub-title c-black hide"></span>
                 <span v-if="content.price=='1'" class="goods-price display-block min-height-price">
-                    <em>￥{{item.price}}</em>
+                    <span  style="color: #fe5000;">￥{{item.price}}</span>
                 </span>
-                <span class="goods-price-taobao hide"></span>
                 </span>
-                <div v-if="content.buy_btn=='1'">
-                    <span  class="goods-buy btn1 info-no-title" @click.stop.prevent="addcart(item.id)"></span>
+                <div v-if="content.buy_btn=='1'" style="width: 3rem;height: 3rem;position: absolute;  right: 0; bottom: 0;" @click.stop.prevent="addcart(item.id)">
+                    <span  class="goods-buy btn1 info-no-title"></span>
                     <!--<span v-if="content.buy_btn_type=='2'" class="goods-buy btn2 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='3'" class="goods-buy btn3 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='4'" class="goods-buy btn4 info-no-title"></span>-->
@@ -25,18 +24,17 @@
     <!--一排一个大图-->
     <ul v-else-if="content.size=='0'" class="js-goods-list sc-goods-list pic clearfix size-1">
         <li v-for="item in content.goods" class="goods-card goods-list small-pic card" style="margin-top:10px;width: 100%;">
-            <router-link :to="{path: '/productDetail/'+storeId+'/'+item.id}" class="js-goods link clearfix" style="height: auto;">
+            <router-link :to="{path: routerPath+'/productDetail',query:{shopid:storeId,productid:item.id}}" class="js-goods link clearfix" style="height: auto;">
                 <span class="photo-block" style="height: auto;"><img class="goods-photo js-goods-lazy" :src="getImgPath(item.image)" style="display:inline;    width: 100%;"></span>
                 <span class="info clearfix info-title">
-                <span  class="goods-title display-block">{{item.title}}</span>
-                <span class="goods-sub-title c-black hide"></span>
-                <span v-if="content.price=='1'" class="goods-price display-block min-height-price">
-                    <em>￥{{item.price}}</em>
+                    <span  class="goods-title display-block">{{item.title}}</span>
+                    <span class="goods-sub-title c-black hide"></span>
+                    <span v-if="content.price=='1'" class="goods-price display-block min-height-price">
+                        <span style="color: #fe5000;">￥{{item.price}}</span>
+                    </span>
                 </span>
-                <span class="goods-price-taobao hide"></span>
-                </span>
-                <div v-if="content.buy_btn=='1'">
-                    <span class="goods-buy btn1 info-no-title" @click.stop="addcart(item.id)"></span>
+                <div v-if="content.buy_btn=='1'" style="width: 3rem;height: 3rem;position: absolute;  right: 0; bottom: 0;" @click.stop.prevent="addcart(item.id)">
+                    <span class="goods-buy btn1 info-no-title"></span>
                     <!--<span v-if="content.buy_btn_type=='1'" class="goods-buy btn1 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='2'" class="goods-buy btn2 info-no-title"></span>
                     <span v-if="content.buy_btn_type=='3'" class="goods-buy btn3 info-no-title"></span>
@@ -48,16 +46,15 @@
     <!--一排一个详细列表-->
     <ul v-else-if="content.size=='3'" class="js-goods-list sc-goods-list clearfix list size-3">
         <li v-for="item in content.goods" class="goods-card goods-list big-pic card">
-            <router-link :to="{path: '/productDetail/'+storeId+'/'+item.id}" class="js-goods link clearfix" style="height: auto;">
+            <router-link :to="{path: routerPath+'/productDetail',query:{shopid:storeId,productid:item.id}}" class="js-goods link clearfix" style="height: auto;">
                 <div class="photo-block2">
                     <img class="goods-photo js-goods-lazy" :src="getImgPath(item.image)" style="display: block;">
                 </div>
                 <div class="info">
                     <p class="goods-title2">{{item.title}}</p>
-                    <p class="goods-price2"><em>￥{{item.price}}</em></p>
-                    <div v-if="content.buy_btn=='1'">
-                        
-                        <span class="goods-buy btn1 info-no-title" @click.stop="addcart(item.id)"></span>
+                    <p class="goods-price2"><span  style="color: #fe5000;">￥{{item.price}}</span></p>
+                    <div v-if="content.buy_btn=='1'" style="width: 3rem;height: 3rem;position: absolute;  right: 0; bottom: 0;" @click.stop.prevent="addcart(item.id)">
+                        <span class="goods-buy btn1 info-no-title" ></span>
                         <!--<span v-if="content.buy_btn_type=='1'" class="goods-buy btn1 info-no-title"></span>
                         <span v-if="content.buy_btn_type=='2'" class="goods-buy btn2 info-no-title"></span>
                         <span v-if="content.buy_btn_type=='3'" class="goods-buy btn3 info-no-title"></span>
@@ -73,9 +70,11 @@
 <script>
     import {getImgPath} from '../common/mixin'
     import {addNumCart} from 'src/service/getData'
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                routerPath:'',
                 addcartpram: {
                     storeId: '',
                     productId: '',
@@ -88,23 +87,20 @@
         props: ['content','storeId'],
         created() {
             this.addcartpram.storeId=this.storeId;
+            this.routerPath=rootPath;
         },
         methods:{
             addcart(id){
-                //alert(id);
                  this.addcartpram.productId=id;
                  addNumCart(this.addcartpram).then(res => {
                     if (res.code == "1") { //成功
-                        //alert("加入购物车成功！");
                         this.$emit('openTip');
                     } else {
-                        //this.$emit.openTip = true;
-                        //this.$emit.alertText = res.msg;
+                         this.$emit('errorTip');
                     }
                 });
             }
         }
-       
     }
 </script>
 
@@ -246,7 +242,7 @@
         min-height: 0.72rem;
     }
     
-    .sc-goods-list .link .info .goods-price>em {
+   .goods-price  span {
         font-style: normal;
         color: #ff6600;
     }
@@ -298,6 +294,6 @@
         position: absolute;
         left: 5.76rem;
         bottom: 0.34rem;
-        color: #fb5000;
+        color: #fe5000;
     }
 </style>

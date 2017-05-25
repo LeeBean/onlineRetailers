@@ -14,18 +14,20 @@
                                 </div>
                                 <div class="address_details">{{item.fullAddress}}</div>
                             </div>
+                            <p v-if="item.msg!=''" class="info_txt" style="color:#fe5000;font-size:0.5rem;margin-left: 2.7rem;">（未上传实名身份信息）</p>
                         </div>
                         <div class="address_edit_icon" @click="goEditAddress(item, index)">
                             <div>
-                                <img src="../../../images/icon_bianji@2x.png" width="14px" height="17px" style=" position: absolute;top: 50%; transform: translateY(-50%);left: 30%;">
+                                <img src="../../../images/icon_bianji@2x.png" width="16px" height="16px" style=" position: absolute;top: 50%; transform: translateY(-50%);left: 30%;">
                             </div>
                         </div>
                     </div>
+                    <p v-if="myaddressList.length==0&&!showLoading" style="text-align: center;font-size: 0.5rem; margin-top: 1rem; color: #999;">还未添加过地址信息！</p>
                 </section>
             </section>
             <div @click="goAddAddress" class="add_icon_footer">
                 <!--<img src="../../../images/add_address.png" height="24" width="24">-->
-                <span style="width: 90%;text-align: center; background: #fb5000; color: #fff; font-size: 0.6rem; height: 35px; line-height: 35px; border-radius: 5px;">添加收件人</span>
+                <span style="width: 90%;text-align: center; background: #fe5000; color: #fff; font-size: 0.6rem; height: 35px; line-height: 35px; border-radius: 5px;">添加收件人</span>
             </div>
         </lazy-render>
         <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
@@ -39,19 +41,15 @@
 </template>
 
 <script>
-    import {
-        mapState,
-        mapMutations
-    } from 'vuex'
-    import {
-        addressList
-    } from 'src/service/getData'
+    import {mapState, mapMutations } from 'vuex'
+    import {addressList} from 'src/service/getData'
     import alertTip from 'src/components/common/alertTip'
     import loading from 'src/components/common/loading'
-    
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                routerPath:'',
                 shopid: '',
                 from: '',//从结算过来或者从“我”过来
                 productType:'',
@@ -66,6 +64,7 @@
             this.shopid = this.$route.query.shopid;
             this.from = this.$route.query.from;
             this.productType=this.$route.query.type;
+            this.routerPath=rootPath;
             this.initData();
         },
         components: {
@@ -74,7 +73,6 @@
         },
         props: [],
         computed: {
-    
             ...mapState([
                 'addressIndex', 'newAddress'
             ]),
@@ -88,16 +86,17 @@
             async initData() {
                 addressList({
                     pageidx: 1,
-                    pagesize: 100
+                    pagesize: 20,
+                    type:this.productType
                 }).then(res => {
                     if (res.code == "1") {
                         this.myaddressList = res.dataList;
                         if (this.myaddressList.length == 0) {
-                            this.showAlert = true;
-                            this.alertText = "暂无收货人地址，请前往添加";
+                            //this.showAlert = true;
+                            //  this.alertText = "暂无收货人地址，请前往添加";
                             // setTimeout(() => {
                             //     this.$router.push({
-                            //         path: '/addAddress',
+                            //         path: this.routerPath+'/addAddress',
                             //         query: {
                             //             shopid: this.shopid
                             //         }
@@ -140,7 +139,7 @@
                     index
                 });
                 this.$router.push({
-                    path: '/addAddress',
+                    path: this.routerPath+'/addAddress',
                     query: {
                         oprtype: 'edit',
                         from: this.from,
@@ -152,7 +151,7 @@
             goAddAddress() {
     
                 this.$router.push({
-                    path: '/addAddress',
+                    path: this.routerPath+'/addAddress',
                     query: {
                         oprtype: 'add',
                         from: this.from,

@@ -23,8 +23,8 @@
         color: #666;
     }
     .active {
-        color: #fb5000;
-        border-bottom: 1px solid #fb5000;
+        color: #fe5000;
+        border-bottom: 1px solid #fe5000;
     }
     .empty-list {
         font-size: 0.6rem;
@@ -123,7 +123,7 @@
     .order_status {
         font-size: 0.5rem;
         float: right;
-        color: #fb5000;
+        color: #fe5000;
     }
     .block.block-border-top-none {
         border-top: none;
@@ -208,8 +208,8 @@
         margin: 0.2rem 00.42rem 0.5rem 0;
     }
     .bordercolor1 {
-        color: #fb5000;
-        border-color: #fb5000;
+        color: #fe5000;
+        border-color: #fe5000;
     }
     .bordercolor2 {
         color: #999;
@@ -238,12 +238,22 @@
 
 .order_list_ul {
     padding-top: 1.95rem;
+    margin-bottom: 1rem;
+}
+
+.loader_more {
+    text-align: center;
+    color: #999;
+    font-size: 0.5rem;
 }
 
 .return_top {
     position: fixed;
-    bottom: 1rem;
-    right: 0.6rem;
+    bottom: 3rem;
+    right: 0;
+    z-index: 9999999;
+    text-align: center;
+    padding: .8rem;
     .back_top_svg {
         @include wh(1.5rem, 1.5rem);
     }
@@ -254,7 +264,7 @@
     @include sc(0.5rem, #666);
     text-align: center;
     line-height: 1rem;
-    margin-bottom: 1rem;
+    margin-bottom: 3rem;
 }
 
 .coverpart {
@@ -321,7 +331,7 @@
                 width: 5rem;
             }
             .quitlogin {
-                background: #fb5000;
+                background: #fe5000;
                 width: 5rem;
             }
         }
@@ -459,7 +469,7 @@ body .coverpart .cover-animate-leave {
     position: fixed;
     bottom: 0;
     width: 100%;
-    z-index: 204;
+    z-index: 99999;
     header {
         background-color: #fafafa;
         @include sc(.7rem, #333);
@@ -485,7 +495,7 @@ body .coverpart .cover-animate-leave {
                 color: #333;
             }
             svg {
-                fill: #fb5000;
+                fill: #fe5000;
             }
         }
     }

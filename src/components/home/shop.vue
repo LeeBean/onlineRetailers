@@ -1,7 +1,7 @@
 <template>
     <div style="padding:0;margin-bottom: 0.427rem;">
         <div class="tpl-shop">
-            <div class="tpl-shop-header"  :style="{background: 'url('+content.shop_head_bg_img+') center center/100% 100% no-repeat'}" >
+            <div class="tpl-shop-header"  :style="{background: 'url('+imgurl+content.shop_head_bg_img+') center center/100% 100% no-repeat'}" >
                 <div class="tpl-shop-title">{{storeName}}</div>
                 <div class="tpl-shop-avatar"><img width="80" height="80" :src="getImgPath(storeImage)"></div>
             </div>
@@ -21,15 +21,19 @@
 
 <script>
     import {getImgPath} from '../common/mixin'
+    import { imgBaseUrl } from 'src/config/env';
     export default {
         data() {
             return {
-               
-            }
+               imgurl:"",
+            }   
         },
         props: ['content','storeId','productNumber','storeName','storeImage'],
         mixins: [getImgPath],
-
+        created() {
+            this.imgurl=imgBaseUrl;
+        }
+        
     }
 </script>
 

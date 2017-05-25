@@ -3,7 +3,7 @@
         <lazy-render :time="300">
             <form class="search_form">
                 <button type="submit" class="custom-search-button"></button>
-                <router-link :to='{path: "/productSearch",query:{shopid:shopid}}' style="width:100%;">
+                <router-link :to='{path:  routerPath+"/productSearch",query:{shopid:shopid}}' style="width:100%;">
                     <input type="search" name="search" placeholder="请输入商品关键字" class="search_input" readonly="true" style="width:100%;">
                 </router-link>
                 <!--<input type="submit" name="submit" class="search_submit" @click.prevent="searchTarget('')" value="搜索">-->
@@ -21,7 +21,7 @@
     
                 <div class="double">
                     <div class="items" v-for="item in productListArr" :key="item.productId">
-                        <router-link :to="{path: '/productDetail/'+shopid+'/'+item.productId}">
+                        <router-link :to="{path:  routerPath+'/productDetail',query:{shopid:shopid,productid:item.productId}}">
                             <div class="placeholder">
                                 <img v-lazy="getImgPath(item.imageUrl)">
                                 <p class="mc">{{item.productName}}</p>
@@ -57,10 +57,11 @@
     import {getCategoryList,goodsLists} from 'src/service/getData'
     import {imgBaseUrl} from '../../config/env'
     import {wxShowOptionMenu } from 'src/config/mUtils'
-    
+    import { rootPath } from 'src/config/env'
     export default {
         data() {
             return {
+                 routerPath:'',
                 shopid: '',
                 searchValue: '', // 搜索内容
                 channelList: [], //频道列表
@@ -79,24 +80,31 @@
                     pagesize: 20,
                     pageidx: 1,
                     keyword: '',
-                    status: ''
+                    status:1
                 } //数据请求参数
             }
         },
         created() {
-
             //this.showLoading = true;
             this.shopid = this.$route.query.shopid;
             if(this.$route.query.channelId){
                 this.classIndex=this.$route.query.channelId;
                 this.pram.categId=this.$route.query.channelId;
             }
+             this.routerPath=rootPath;
            wxShowOptionMenu();
         },
+      
         mixins: [loadMore, getImgPath],
+        // activated(){
+        //     alert(1);
+        // },
         mounted() {
             let me = this;
-            getCategoryList().then(res => {
+            sessionStorage.serchVaule="";
+            getCategoryList({
+                id:this.shopid
+            }).then(res => {
                 this.channelList = res.categoryList;
                 if (res.categoryList) {
                     me.pram.storeId = me.shopid;
@@ -136,12 +144,12 @@
                     me.showLoading = true;
                     me.preventRepeatReuqest = true;
                     //数据的定位加20位
-                    me.pram.pageidx += 1;
+                    me.pram.pageidx =Number(me.pram.pageidx)+1;
                     goodsLists(me.pram).then(res => {
                         me.showLoading = false;
                         me.productListArr = [...this.productListArr, ...res.goods];;
                         me.preventRepeatReuqest = false;
-                        if (res.goods.length < 20) {
+                        if (res.goods.length <20) {
                             return
                         }
                     }).catch(function(err) {
@@ -163,6 +171,7 @@
                 this.classIndex = channelId;
                 this.channelId = channelId;
                 this.pram.categId = channelId;
+                this.pram.pageidx = 1;
                 this.nomore = false;
                 this.getData();
             },
@@ -173,7 +182,7 @@
                 //获取数据
                 goodsLists(me.pram).then(res => {
                     me.showLoading = false;
-                    me.pageMax = res.goods.pageMax;
+                    me.pageMax = res.pageMax;
                     if (res.goods.length == 0) {
                         me.emptyResult = true;
                     } else {
@@ -191,7 +200,9 @@
                     this.getData();
                 }
             }
-        }
+        },
+   
+        
     }
 </script>
 

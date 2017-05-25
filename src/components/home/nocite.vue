@@ -1,7 +1,7 @@
 <template>
-    <div class="custom-notice">
-        <div class="custom-notice-inner">
-            <div class="custom-notice-scroll"><span class="js-scroll-notice">{{content.content}}</span></div>
+    <div class="custom-notice" id="wrapper">
+        <div class="custom-notice-inner" id="inner">
+            <p class="custom-notice-scroll" id="content">{{content.content}}</p>
         </div>
     </div>
 </template>
@@ -13,7 +13,29 @@
     
             }
         },
-        props: ['content','storeId']
+        props: ['content','storeId'],
+        mounted() {
+            var wrapper = document.getElementById('wrapper');
+            var inner = document.getElementById('inner');
+            var content =  document.getElementById('content');
+            var p_w = content.offsetWidth;
+            var wrapper_w = wrapper.offsetWidth;
+            if (wrapper_w > p_w) {
+                return false;
+            }
+            clearInterval(this.timer);
+            content.innerHTML += content.innerHTML;
+            function fun1() {
+                if (p_w > wrapper.scrollLeft) {
+                    wrapper.scrollLeft++;
+                }
+            }
+            this.timer = setInterval(() => fun1(), 50);
+            
+        },
+         beforeDestroy() {
+             clearInterval(this.timer);
+		}
     }
 </script>
 
@@ -28,11 +50,16 @@
         border-bottom: 1px solid #eee;
         word-break: break-all;
         font-size: 12px;
+         white-space: nowrap;
+            overflow: hidden;
+            width: 100%;
     } 
     .custom-notice-inner {
+      width: 10000px;
         overflow: hidden;
     }
     .custom-notice-scroll {
-        width: 20000px;
+       
+         display: inline-block;
     }
 </style>

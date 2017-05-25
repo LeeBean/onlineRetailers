@@ -113,9 +113,10 @@
 }
 
 .photo-block img {
+    position: absolute;
     max-width: 125px;
     max-height: 125px;
-    position: absolute;
+    width: 80%;
     left: 0;
     right: 0;
     top: 0;
@@ -139,12 +140,14 @@
     padding-top: 5px;
     padding-right: 6px;
     font-size: 14px;
-    max-height: 60px;
     margin-bottom: 12px;
     line-height: 23px;
-    overflow: hidden;
     color: #333;
     margin: 0px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
 .goods-price {
@@ -152,10 +155,10 @@
     margin-bottom: 8px;
     position: absolute;
     left: 135px;
-    bottom: 5px;
+    bottom: 0;
 }
 
-.goods-price>em {
+.goods-price span {
     font-style: normal;
     color: #ff6600;
 }
@@ -196,7 +199,10 @@
 .return_top {
     position: fixed;
     bottom: 3rem;
-    right: 1rem;
+    right: 0;
+    z-index: 9999999;
+    text-align: center;
+    padding: .8rem;
     .back_top_svg {
         @include wh(2rem, 2rem);
     }

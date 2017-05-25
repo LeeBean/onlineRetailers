@@ -90,7 +90,7 @@
 	}
 	
 	circle {
-		fill: #FB5000;
+		fill: #fe5000;
 		fill-opacity: 0;
 		-webkit-animation: opacity 1.2s linear infinite;
 		animation: opacity 1.2s linear infinite;
@@ -219,7 +219,7 @@
 	
 	@-webkit-keyframes colors {
 		0% {
-			fill: #FB5000;
+			fill: #fe5000;
 		}
 		10% {
 			fill: gold;
