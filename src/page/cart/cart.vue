@@ -165,16 +165,23 @@
         mounted() {
             let me = this;
             let uncheaksIds=JSON.parse(getStore("unchechcartids"));
+            if(uncheaksIds==null||uncheaksIds==undefined){
+               uncheaksIds=[]; 
+            }
             //console.log(uncheaksIds);
             cartLists(me.pram).then(res => {
-                if (res.cartList.length == 0) {
-                    this.showNodata = true;
-                    this.showLoading = false;
+                if(res.code!="1"){
                     return;
                 }
-                this.cartList = res.cartList;
-                this.shopname = res.storeName;
-                for (var i = 0; i < this.cartList.length; i++) {
+                if (res.cartList.length == 0) {
+                    me.showNodata = true;
+                    me.showLoading = false;
+                    return;
+                }
+                
+                me.cartList = res.cartList;
+                me.shopname = res.storeName;
+                for (let i = 0,len=me.cartList.length; i < len; i++) {
                     for(var j=0;j<uncheaksIds.length;j++){
                         if(this.cartList[i].cartId==uncheaksIds[j]){
                             this.cartList[i].ischecked=false;
@@ -333,24 +340,25 @@
                     this.cartList.forEach(item => {
                         item.ischecked = false;
                     })
-                    this.totalPrice = 0.00;
-                    this.totalSprice = 0.00;
+                    this.totalPrice = 0;
+                    this.totalSprice = 0;
                     this.checkIsAll();
                 } else {
-                    this.totalPrice = 0.00;
-                    this.totalSprice = 0.00;
+                    this.totalPrice = 0;
+                    this.totalSprice = 0;
                     this.checkAll = true;
                     this.cartList.forEach(item => {
                         item.ischecked = true;
                         //计算总价 和总税费
-                        this.totalPrice += (item.price * item.quantity);
-                        this.totalSprice += (item.tax * item.quantity);
-                        this.totalPrice += this.totalSprice;
+                        // this.totalPrice += (item.price * item.quantity);
+                        // this.totalSprice += (item.tax * item.quantity);
+                      
                     })
-                    //console.log(this.totalPrice);
-                    this.totalPrice = this.totalPrice.toFixed(2);
-                    this.totalSprice = this.totalSprice.toFixed(2);
-                    this.checkIsAll();
+                     // this.totalPrice += this.totalSprice;
+                    // this.totalPrice = this.totalPrice.toFixed(2);
+                    // this.totalSprice = this.totalSprice.toFixed(2);
+                    //this.checkIsAll();
+                    this.calculation();
                 }
     
             },
@@ -419,15 +427,16 @@
             },
             //计算税费和总价
             calculation() {
-                this.totalPrice = 0.00;
-                this.totalSprice = 0.00;
+
+                this.totalPrice = 0;
+                this.totalSprice = 0;
                 this.cartList.forEach(item => {
-                    if (item.ischecked) {
+                    if (item.ischecked==true) {
                         this.totalPrice += (item.price * item.quantity);
                         this.totalSprice += (item.tax * item.quantity);
-                        this.totalPrice += this.totalSprice;
                     }
                 })
+                this.totalPrice += this.totalSprice;
                 this.totalPrice = this.totalPrice.toFixed(2);
                 this.totalSprice = this.totalSprice.toFixed(2);
             },
@@ -448,16 +457,20 @@
                     this.checkAll = true;
                     this.cartList.forEach(item => {
                         item.ischecked = true;
-                    })
-                     let uncheaksIds=JSON.parse(getStore("unchechcartids"));
+                    });
+                    let uncheaksIds=JSON.parse(getStore("unchechcartids"));
                     for (var i = 0; i < this.cartList.length; i++) {
                         for(var j=0;j<uncheaksIds.length;j++){
                             if(this.cartList[i].cartId==uncheaksIds[j]){
                                 this.cartList[i].ischecked=false;
+                                if(this.checkAll){
+                                    this.checkAll = false;
+                                }
+                                
                             }
                         }
                     }
-                    this.checkIsAll();
+                    //this.checkIsAll();
                     //计算总价 和总税费
                     this.calculation();
                 }

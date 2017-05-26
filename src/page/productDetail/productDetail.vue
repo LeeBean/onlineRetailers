@@ -28,7 +28,7 @@
                         </div>
                         <div class="weui-cell-ft"></div>
                     </div>
-                    <div class="weui-cell weui-cell-access" v-show="productInfoproductType=='3'">
+                    <div class="weui-cell weui-cell-access" v-show="productInfo.productType=='3'">
                         <div class="weui-cell-bd">
                             <span style="vertical-align: middle"><p class="dp">重量：<span id="yunfei"> {{productInfo.totalWeights}}g</span><span style="font-size:0.5rem;color:#999;">{{weightDesc}}</span></p>
                             </span>

@@ -32,7 +32,7 @@
                     <div class="identity_pic_div" v-if="ptype=='3'">
                         <div class="front_div webuploader-container">
                             <div class="webuploader-pick">
-                                <img v-if="addressData.identityFront!=''" :src="getImgPath(sybaseUrl+'upload'+addressData.identityFront)" width="100%;" class="pic_overflow">
+                                <img v-if="addressData.identityFront!=''" :src="getImgPath(addressData.identityFront)" width="100%;" class="pic_overflow">
                                 <img v-if="addressData.identityFront==''" src="../../../../images/shenfenzheng1@2x.png" width="100%;" class="pic_overflow">
                                 <img v-show="addressData.identityFront==''" src="../../../../images/icon@2x.png" width="63px" height="24px" class="pic_upload_but">
                                 <p class="pic_upload_text">身份证正面照</p>
@@ -44,7 +44,7 @@
                         </div>
                         <div class="back_div webuploader-container">
                             <div class="webuploader-pick">
-                                <img v-if="addressData.identityBack!=''" :src="getImgPath(sybaseUrl+'upload'+addressData.identityBack)" width="100%;" class="pic_overflow">
+                                <img v-if="addressData.identityBack!=''" :src="getImgPath(addressData.identityBack)" width="100%;" class="pic_overflow">
                                 <img v-if="addressData.identityBack==''" src="../../../..//images/shenfenzheng2@2x.png" width="100%;" class="pic_overflow">
                                 <img v-show="addressData.identityBack==''" src="../../../../images/icon@2x.png" width="63px" height="24px" class="pic_upload_but">
                                 <p class="pic_upload_text">身份证反面照</p>
@@ -220,8 +220,8 @@
                     }else{
                         this.addressData.isDefault=false;
                     }
-                    this.addressData.identityFrontRelative=this.addressData.identityFront;
-                    this.addressData.identityBackRelative=this.addressData.identityBack;
+                    // this.addressData.identityFrontRelative=this.addressData.identityFront;
+                    // this.addressData.identityBackRelative=this.addressData.identityBack;
                 }
     
             }else if(this.oprType == "add"&&!this.$route.query.hasDefault){
@@ -316,7 +316,7 @@
                 saveAddress(me.addressData).then(res => {
                     me.showLoading = false;
                     if (res.code == "1") {
-                        me.showAlert = true;
+                        //me.showAlert = true;
                         //me.alertText = "添加成功";
                         me.$router.go(-1);
                     } else {
