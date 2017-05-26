@@ -85,7 +85,7 @@
                             <h4>请选择地址</h4>
                             <span @click="closeAdd()">×</span>
                         </section>-->
-                        <section class="title" style="height:2.rem;line-height:2.1rem;border-bottom:1px #eee solid;">
+                        <section class="title" style="height:2rem;line-height:2rem;border-bottom:1px #eee solid;overflow: hidden;">
                             <div class="area" @click="provinceSelected()" :class="showProvince?'active':''">{{Province?Province:'省份'}}</div>
                             <div class="area" @click="citySelected()" :class="showCity?'active':''">{{City?City:'城市'}}</div>
                             <div class="area" @click="districtSelected()" :class="showDistrict?'active':''">{{District?District:'区域'}}</div>

@@ -78,7 +78,7 @@
              this.routerPath=rootPath;
         },
         mounted() {
-            if (this.content.image_type == "0"&&this.content.nav_list.length>0) {
+            if (this.content.image_type == "0") {
                 new Swiper('.swiper-container', {
                     pagination: '.swiper-pagination',
                     loop: true,

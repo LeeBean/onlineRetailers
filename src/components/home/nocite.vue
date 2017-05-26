@@ -1,7 +1,7 @@
 <template>
     <div class="custom-notice" id="wrapper">
         <div class="custom-notice-inner" id="inner">
-            <p class="custom-notice-scroll" id="content">{{content.content}}</p>
+            <p class="custom-notice-scroll" id="content">公告：{{content.content}}</p>
         </div>
     </div>
 </template>

@@ -1,6 +1,19 @@
  <template>
         <section class="profile-info" style="margin-top:0.3rem;"> 
             <section  v-for="item in content" class="info-router">
+                <a v-if="item.prefix==''" :href="item.name">
+                    <section class="headportrait headportraitwo">
+                        <h2>{{item.title}}</h2>
+                        <div class="headportrait-div">
+                            <p></p>
+                            <span class="headportrait-div-bottom">
+                                <svg fill="#d8d8d8">
+                                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#arrow-right"></use>
+                                </svg>
+                            </span>
+                        </div>
+                    </section>
+                </a>
                 <a v-if="item.prefix=='外链'" :href="item.name">
                     <section class="headportrait headportraitwo">
                         <h2>{{item.title}}</h2>

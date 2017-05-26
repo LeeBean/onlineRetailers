@@ -320,11 +320,17 @@
 }
 
 .area {
-    display: inline-block;
-    font-size: 0.6rem;
-    line-height: 1.70rem;
+    font-size: .6rem;
+    line-height: 1.9rem;
     margin-left: 1rem;
     color: #333;
+    float: left;
+}
+
+.area::after {
+    content: "";
+    display: block;
+    clear: both;
 }
 
 .addList {
@@ -351,8 +357,8 @@
 }
 
 .address .title .active {
-    // color: #fe5000;
-    border-bottom: 0.02rem solid #fe5000;
+    color: #fe5000;
+    border-bottom: 1px solid #fe5000;
 }
 
 .address ul .active {

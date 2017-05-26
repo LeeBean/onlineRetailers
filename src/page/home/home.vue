@@ -10,6 +10,7 @@
                 <rich-text v-if="item.fieldType=='rich_text'" :content="item.content" :storeId="shopid"></rich-text>
                 <text-nav v-if="item.fieldType=='text_nav'" :content="item.content" :storeId="shopid"></text-nav>
                 <product v-if="item.fieldType=='goods'" :content="item.content" :storeId="shopid" @openTip="showAlert=true" @errorTip="showErrorAlert" ></product>
+                <myTitle  v-if="item.fieldType=='title'" :content="item.content"></myTitle>
                 <hr v-if="item.fieldType=='line'" style="height:1px;border:none;border-top:1px dashed #999;" />
                 <div v-if="item.fieldType=='white'" :style="{height:item.content.height+'px'}" class="white"></div>
             </div>
@@ -50,6 +51,7 @@
     import richText from 'src/components/home/richText'
     import serachForm from 'src/components/home/searchForm'
     import shop from 'src/components/home/shop'
+    import myTitle from 'src/components/home/myTitle'
     import {wxShowOptionMenu } from 'src/config/mUtils'
     import alertTip from 'src/components/common/alertTip'
     import {homeDatas} from 'src/service/getData'
@@ -110,6 +112,7 @@
             richText,
             serachForm,
             shop,
+            myTitle,
             loading,
             alertTip
         },

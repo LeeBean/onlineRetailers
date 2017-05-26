@@ -131,6 +131,9 @@
             <router-view></router-view>
         </transition>
         <foot-guide :storeId="shopid"></foot-guide>
+         <div class="cover22" v-if="showCover"  @click.self="closeCover"> 
+            <div><img class="ercode" :src="getImgPath(ercode)"></div>
+        </div>
     </div>
 </template>
 
@@ -179,7 +182,9 @@
                     status: '0',
                     pageidx: 1,
                     pagesize: 20
-                } //请求对象
+                }, //请求对象
+                showCover:false,
+                ercode:'',//二维码
             }
         },
         created() {
@@ -429,6 +434,11 @@
                 orderPay(paybo).then(res => {
                     me.showLoadingToast=false;
                     if (res.code == "1") {
+                        if(res.orderPayInfo.isOther=="1"){
+                            me.ercode=res.orderPayInfo.imagePath;
+                            me.showCover=true;
+                            return;
+                        }
                         if (isWeiXin() && this.payType == 0) {
                             function onBridgeReady() {
                                 WeixinJSBridge.invoke(
@@ -476,6 +486,9 @@
                         me.alertText = res.msg;
                     }
                 });
+            },
+            closeCover(){
+                this.showCover=false;
             }
         },
         filters: {

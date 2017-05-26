@@ -3,6 +3,12 @@
         <div class="food_types_container">
     
             <p class="link_to_food" v-for="item in content" v-if="item.image!=''">
+                <a v-if="item.prefix==''" :href="item.name">
+                    <figure>
+                        <img :src="getImgPath(item.image)">
+                        <figcaption>{{item.title}}</figcaption>
+                    </figure>
+                </a>
                 <a v-if="item.prefix=='外链'" :href="item.name">
                     <figure>
                         <img :src="getImgPath(item.image)">

@@ -142,6 +142,9 @@
         <transition name="loading">
             <loading v-show="showLoading"></loading>
         </transition>
+        <div class="cover22" v-if="showCover"  @click.self="closeCover"> 
+            <div><img class="ercode" :src="getImgPath(ercode)"></div>
+        </div>
     </div>
 </template>
 
@@ -178,7 +181,9 @@
                 pram: {
                     orderId: '',
                     storeId: ''
-                }
+                },
+                showCover:false,
+                ercode:'',//二维码
             }
         },
         created() {
@@ -312,6 +317,11 @@
                 orderPay(paybo).then(res => {
                     me.showLoadingToast=false;
                     if (res.code == "1") {
+                        if(res.orderPayInfo.isOther=="1"){
+                            me.ercode=res.orderPayInfo.imagePath;
+                            me.showCover=true;
+                            return;
+                        }
                         if (isWeiXin() && this.payType == 0) {
                             function onBridgeReady() {
                                 WeixinJSBridge.invoke(
@@ -393,6 +403,9 @@
                         orderNo: order.orderNo
                     }
                 });
+            },
+            closeCover(){
+                this.showCover=false;
             }
     
         },

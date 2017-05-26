@@ -597,6 +597,27 @@ body .coverpart .cover-animate-leave {
     top: 16px;
 }
 
+.cover22 {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 9999999;
+}
+
+.ercode {
+    position: absolute;
+    z-index: 9999999;
+    top: 25%;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: 0 auto;
+    width: 300px;
+}
+
 // .loading-enter-active,
 // .loading-leave-active {
 //     transition: opacity .7s

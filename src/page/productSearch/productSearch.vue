@@ -117,7 +117,7 @@
              if(sessionStorage.serchVaule!=''){
                 this.pram.keyword=sessionStorage.serchVaule;
                 this.searchValue=sessionStorage.serchVaule;
-                me.getData();
+                this.getData();
             }
             //开始监听scrollTop的值，达到一定程度后显示返回顶部按钮
             showBack(status => {

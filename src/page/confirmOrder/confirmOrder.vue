@@ -170,6 +170,9 @@
             <router-view></router-view>
         </transition>
         <alert-tip v-if="showAlert" @closeTip="showAlert = false" :alertText="alertText"></alert-tip>
+        <div class="cover22" v-if="showCover"  @click.self="closeCover"> 
+            <div><img class="ercode" :src="getImgPath(ercode)"></div>
+        </div>
     </div>
 </template>
 
@@ -212,6 +215,8 @@
                 },
                 orderInfo: {}, //订单信息
                 addressInfo: {}, //地址信息
+                showCover:false,
+                ercode:'',//二维码
             }
         },
         created() {
@@ -366,6 +371,7 @@
                    // me.showLoading = false;
                     me.showPayWay = !this.showPayWay;
                     if (res.code == "1") {
+                        
                         let paybo = {
                             orderId: res.orderId,
                             isWeb: true
@@ -376,6 +382,11 @@
                         orderPay(paybo).then(res2 => {
                             me.showLoadingToast=false;
                             if (res2.code == "1") {
+                                if(res2.orderPayInfo.isOther=="1"){
+                                    me.ercode=res2.orderPayInfo.imagePath;
+                                    me.showCover=true;
+                                    return;
+                                }
                                 // me.$router.push({
                                 //     path: '/orderDetail',
                                 //     query: {
@@ -439,6 +450,9 @@
                     }
     
                 });
+            },
+            closeCover(){
+                this.showCover=false;
             }
         },
         beforeRouteLeave (to, from, next) {

@@ -5,16 +5,16 @@
                 <div class="tpl-shop-title">{{storeName}}</div>
                 <div class="tpl-shop-avatar"><img width="80" height="80" :src="getImgPath(storeImage)"></div>
             </div>
-            <!--<div class="tpl-shop-content">
+            <div class="tpl-shop-content">
                 <ul class="clearfix">
-                    <li>
-                        <router-link :to='{path: "/type",query:{shopid:storeId}}'>
-                            <span class="count">{{productNumber}}</span>
-                            <span class="text">全部商品</span>
+                    <li >
+                        <router-link :to='{path: "/wap/type",query:{shopid:storeId}}'>
+                        <span class="count">{{productNumber}}</span>
+                        <span class="text">全部商品</span>
                          </router-link>
                     </li>
                 </ul>
-            </div>-->
+            </div>
         </div>
     </div>
 </template>
@@ -33,6 +33,7 @@
         created() {
             this.imgurl=imgBaseUrl;
         }
+       
         
     }
 </script>
@@ -60,9 +61,10 @@
     .tpl-shop-avatar {
         position: absolute;
         left: 0.43rem;
-        bottom: 0.1rem;
+        top: 3rem;
         width: 3.4rem;
         height: 3.4rem;
+
     }
     
     .tpl-shop-avatar img {
@@ -75,7 +77,7 @@
     }
     
     .tpl-shop-content {
-        padding: 0.3rem 0;
+        // padding: 0.3rem 0;
         border-bottom: 1px solid #eee;
         background: #fff;
     }
@@ -102,12 +104,8 @@
         float: left;
         width: 33%;
         list-style: none;
-        border-right: 1px solid #E4E4E4;
-        -webkit-box-sizing: border-box;
-        -moz-box-sizing: border-box;
         box-sizing: border-box;
         margin-top:  0.426rem;
-        margin-bottom: 0.256rem;
     }
     
     .tpl-shop-content li a {
@@ -131,7 +129,7 @@
     .tpl-shop-content .count {
         height: 0.896rem;
         line-height: 0.896rem;
-        font-size: 0.768rem;
+        font-size: 0.7rem;
         color: #333;
         overflow: hidden;
     }

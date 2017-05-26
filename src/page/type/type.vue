@@ -92,7 +92,7 @@
                 this.pram.categId=this.$route.query.channelId;
             }
              this.routerPath=rootPath;
-           wxShowOptionMenu();
+            wxShowOptionMenu();
         },
       
         mixins: [loadMore, getImgPath],
